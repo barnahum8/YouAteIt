@@ -1,12 +1,19 @@
 import React from 'react';
 import {Tabs,Tab, Box, Typography} from '@material-ui/core';
 import './FormComp.css';
+import PersonalDetails from '../PersonalDetails/PersonalDetails';
 
 interface MyProps {
 }
 
 interface MyState {
-    value: number
+    value: number,
+    firstName: string,
+    lastName: string,
+    date: string,
+    beer: string,
+    id: string,
+    phone: string
 }
 
 export class FormComp extends React.Component<MyProps,MyState> {
@@ -15,7 +22,13 @@ export class FormComp extends React.Component<MyProps,MyState> {
         super(props);
     
         this.state = {
-            value: 0
+            value: 0,
+            firstName: '',
+            lastName: '',
+            date: '',
+            beer: '',
+            id: '',
+            phone: '',
         };
     }
 
@@ -48,6 +61,15 @@ export class FormComp extends React.Component<MyProps,MyState> {
       );
     }
 
+    // changes field based on the parameter
+    handleChange = (event:any) => {
+        const name = event.target.id;
+        this.setState({
+          ...this.state,
+          [name]: event.target.value,
+        });
+    };
+
     public render() {
         return (
             <div>
@@ -59,7 +81,13 @@ export class FormComp extends React.Component<MyProps,MyState> {
                 </div>
                 <this.TabPanel value={this.state.value} index={0}>
                   <div>
-                  <p>פרטים אישיים</p>
+                  <PersonalDetails firstName = {this.state.firstName}
+                                   lastName = {this.state.lastName}
+                                   date = {this.state.date}
+                                   beer = {this.state.beer}
+                                   id = {this.state.id}
+                                   phone = {this.state.phone}
+                                   handleChange = {this.handleChange}></PersonalDetails>
                   </div>
                 </this.TabPanel>
                 <this.TabPanel value={this.state.value} index={1}>
