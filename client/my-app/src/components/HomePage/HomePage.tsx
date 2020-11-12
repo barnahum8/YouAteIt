@@ -2,6 +2,7 @@ import React from 'react';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { AppBar } from '@material-ui/core';
 import './HomePage.css';
+import FormComp from '../FormComp/FormComp';
 
 
 const CLIENT_ID = '213563774258-u65snpotb10nmhh5lniou72ph518auv4.apps.googleusercontent.com';
@@ -66,7 +67,7 @@ export class HomePage extends React.Component<MyProps,MyState> {
             </div>
           </AppBar>
           { this.state.isLogined ?
-            <h1>ברוך הבא</h1>: <div className="comp">
+            <FormComp></FormComp>: <div className="comp">
                 <h2>...ברוכים הבאים לאכלת אותה! בואו נתחבר ומיד נתחיל</h2>
                 <GoogleLogin
                 clientId={ CLIENT_ID }
