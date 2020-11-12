@@ -9,7 +9,10 @@ interface MyProps {
     beer: string,
     id: string,
     phone: string,
-    handleChange: Function
+    handleChange: Function,
+    isYoungForBeer: Function,
+    namesValidation: Function,
+    dateValidation: Function
 }
 
 interface MyState {
@@ -29,7 +32,9 @@ class PersonalDetails extends React.Component<MyProps,MyState> {
         return (
         <div className="fullpage" dir="rtl">
             <form noValidate autoComplete="off">
-                <TextField  value={this.props.firstName} 
+                <TextField  value={this.props.firstName}
+                            error={this.props.namesValidation(this.props.firstName)}
+                            helperText={this.props.namesValidation(this.props.firstName) ? "הכנס שם בעברית או באנגלית בלבד" : ''} 
                             inputProps={{ maxLength: 50 }}
                             style={{paddingLeft: '2%',float:'right'}}
                             InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
@@ -37,6 +42,8 @@ class PersonalDetails extends React.Component<MyProps,MyState> {
                             label="שם פרטי"
                             onChange={(event) => this.props.handleChange(event)} />
                 <TextField  value={this.props.lastName}
+                            error={this.props.namesValidation(this.props.lastName)}
+                            helperText={this.props.namesValidation(this.props.lastName) ? "הכנס שם בעברית או באנגלית בלבד" : ''}
                             inputProps={{ maxLength: 50 }} 
                             style={{paddingRight: '2%',float:'right'}}
                             InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
@@ -46,11 +53,13 @@ class PersonalDetails extends React.Component<MyProps,MyState> {
                 <div className="dateandbeer">
                     <p className="label">תאריך לידה:</p>
                     <TextField  value={this.props.date}
+                                error={this.props.dateValidation(this.props.date)}
+                                helperText={this.props.dateValidation(this.props.date) ? "תאריך לידה לא חוקי" : ''}
                                 style={{padding:'1%',float: 'right',marginTop:'1%',marginLeft:'3%'}} 
                                 id="date" 
                                 type="date" 
                                 onChange={(event) => this.props.handleChange(event)}/>
-                    <div>
+                    <div hidden={this.props.isYoungForBeer()}>
                         <p className="label">בירה אהובה:</p>
                         <FormControl className="selectform">
                             <Select

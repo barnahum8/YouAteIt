@@ -70,6 +70,38 @@ export class FormComp extends React.Component<MyProps,MyState> {
         });
     };
 
+    // checks if the user is young or old for beer option
+    isYoungForBeer = () => {
+      const birthDate = new Date().getTime() - 1000*60*60*24*365.2425*18
+      let isNotOver = true;
+      
+      if(new Date(this.state.date).getTime() < birthDate){
+          isNotOver = false;
+      }
+
+      return isNotOver;
+    }
+
+    // validate first and last names
+    namesValidation = (name:string) => {
+      let isNotValid = false;
+      if(name.length !== 0 && !name.match(/^[a-z\u0590-\u05fe ]+$/)){
+          isNotValid = true;
+      }
+
+      return isNotValid;
+    }
+
+    // validate birth date
+    dateValidation = (date:string) => {
+      let isNotValid = false;
+      if(new Date(date).getTime() > Date.now()){
+          isNotValid = true;
+      }
+
+      return isNotValid;
+    }
+
     public render() {
         return (
             <div>
@@ -87,7 +119,10 @@ export class FormComp extends React.Component<MyProps,MyState> {
                                    beer = {this.state.beer}
                                    id = {this.state.id}
                                    phone = {this.state.phone}
-                                   handleChange = {this.handleChange}></PersonalDetails>
+                                   handleChange = {this.handleChange}
+                                   isYoungForBeer = {this.isYoungForBeer}
+                                   namesValidation = {this.namesValidation}
+                                   dateValidation = {this.dateValidation}></PersonalDetails>
                   </div>
                 </this.TabPanel>
                 <this.TabPanel value={this.state.value} index={1}>
