@@ -38,3 +38,28 @@ test('test dateValidation 2', () => {
     const namesVal = formFunctions.dateValidation("11/12/1995");
     expect(namesVal).toBe(false);
 });
+
+test('test idValidation 1', () => {
+    const namesVal = formFunctions.idValidation("207025222");
+    expect(namesVal).toBe(false);
+});
+
+test('test idValidation 2', () => {
+    const namesVal = formFunctions.idValidation("207025223");
+    expect(namesVal).toBe(true);
+});
+
+test('test phoneValidation 1', () => {
+    const namesVal = formFunctions.phoneValidation("456");
+    expect(namesVal).toBe(true);
+});
+
+test('test phoneValidation 2', () => {
+    const namesVal = formFunctions.phoneValidation("05467675");
+    expect(namesVal).toBe(true);
+});
+
+test('test phoneValidation 3', () => {
+    const namesVal = formFunctions.phoneValidation("0542255467");
+    expect(namesVal).toBe(false);
+});

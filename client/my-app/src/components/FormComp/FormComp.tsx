@@ -102,6 +102,44 @@ export class FormComp extends React.Component<MyProps,MyState> {
       return isNotValid;
     }
 
+    // validate id
+    idValidation = (id:any) =>{
+      let isNotValid = true;
+      if(id.length === 0){
+          isNotValid = false;
+      } else if(id.length === 9){
+          let digSum = 0;
+          let SecondValue = 0;
+          let firstValue = 0;
+      
+          for(let i=2; i<id.length + 2; i++){    
+              firstValue = id.substr(i-2,1) * 1;
+              if(firstValue !== 0){
+                  SecondValue=((i%2) + 1) * firstValue;
+                  digSum += (SecondValue > 9) ? (1 + SecondValue%10) : SecondValue;
+              }
+          }
+
+          isNotValid = !(digSum%10 === 0)
+      }
+      
+      return isNotValid;
+    }
+
+    // validate phone number
+    phoneValidation = (phone:string) => {
+        let isNotValid = false;
+        if(phone.length !== 0 && 
+           (!phone.match(/^[0-9]*$/) || 
+           phone.charAt(0) !== '0' || 
+           phone.length !== 10)){
+            isNotValid = true;
+        }
+
+        return isNotValid;
+    }
+
+
     public render() {
         return (
             <div>
@@ -122,7 +160,9 @@ export class FormComp extends React.Component<MyProps,MyState> {
                                    handleChange = {this.handleChange}
                                    isYoungForBeer = {this.isYoungForBeer}
                                    namesValidation = {this.namesValidation}
-                                   dateValidation = {this.dateValidation}></PersonalDetails>
+                                   dateValidation = {this.dateValidation}
+                                   idValidation = {this.idValidation}
+                                   phoneValidation = {this.phoneValidation}></PersonalDetails>
                   </div>
                 </this.TabPanel>
                 <this.TabPanel value={this.state.value} index={1}>

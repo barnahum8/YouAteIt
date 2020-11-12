@@ -12,7 +12,9 @@ interface MyProps {
     handleChange: Function,
     isYoungForBeer: Function,
     namesValidation: Function,
-    dateValidation: Function
+    dateValidation: Function,
+    idValidation: Function,
+    phoneValidation: Function
 }
 
 interface MyState {
@@ -78,7 +80,9 @@ class PersonalDetails extends React.Component<MyProps,MyState> {
                     </div>
                 </div>
                 <div className="field">
-                    <TextField  value={this.props.id} 
+                    <TextField  value={this.props.id}
+                                error={this.props.idValidation(this.props.id)}
+                                helperText={this.props.idValidation(this.props.id) ? "הכנס תז תקינה כולל ספרת ביקורת" : ''} 
                                 inputProps={{ maxLength: 9 }}
                                 InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
                                 id="id" 
@@ -86,7 +90,9 @@ class PersonalDetails extends React.Component<MyProps,MyState> {
                                 onChange={(event) => this.props.handleChange(event)} />
                 </div>
                 <div className="field">
-                    <TextField  value={this.props.phone} 
+                    <TextField  value={this.props.phone}
+                                error={this.props.phoneValidation(this.props.phone)}
+                                helperText={this.props.phoneValidation(this.props.phone) ? "הכנס מספר פלאפון נייד תקין" : ''} 
                                 InputLabelProps={{style:{direction:"rtl",left:"auto"}}}
                                 inputProps={{ maxLength: 10 }} 
                                 id="phone" 
