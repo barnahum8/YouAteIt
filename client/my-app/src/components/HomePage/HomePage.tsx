@@ -53,15 +53,20 @@ export class HomePage extends React.Component<MyProps,MyState> {
           <AppBar position="static">
             <div>
               <h2 >אכלת אותה</h2>
+              <div hidden={!this.state.isLogined}>
+                <GoogleLogout
+                  clientId={ CLIENT_ID }
+                  buttonText='התנתק'
+                  onLogoutSuccess={ this.logout }
+                  onFailure={ this.handleLogoutFailure }
+                >
+                </GoogleLogout>
+                <p>{this.state.userEmail} שלום</p>
+            </div>
             </div>
           </AppBar>
           { this.state.isLogined ?
-            <GoogleLogout
-              clientId={ CLIENT_ID }
-              buttonText='התנתק'
-              onLogoutSuccess={ this.logout }
-              onFailure={ this.handleLogoutFailure }
-            ></GoogleLogout> : <div>
+            <h1>ברוך הבא</h1>: <div className="comp">
                 <h2>...ברוכים הבאים לאכלת אותה! בואו נתחבר ומיד נתחיל</h2>
                 <GoogleLogin
                 clientId={ CLIENT_ID }
