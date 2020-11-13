@@ -79,6 +79,7 @@ export class FormComp extends React.Component<MyProps,MyState> {
       return (
         <div
           role="tabpanel"
+          className="tabpanel"
           hidden={value !== index}
           id={`simple-tabpanel-${index}`}
           aria-labelledby={`simple-tab-${index}`}
@@ -145,7 +146,7 @@ export class FormComp extends React.Component<MyProps,MyState> {
           let firstValue = 0;
       
           for(let i=2; i<id.length + 2; i++){    
-              firstValue = id.substr(i-2,1) * 1;
+              firstValue = parseInt(id.substr(i-2,1));
               if(firstValue !== 0){
                   SecondValue=((i%2) + 1) * firstValue;
                   digSum += (SecondValue > 9) ? (1 + SecondValue%10) : SecondValue;
@@ -282,7 +283,7 @@ export class FormComp extends React.Component<MyProps,MyState> {
                                     idValidation = {this.idValidation}
                                     phoneValidation = {this.phoneValidation}></PersonalDetails>
                   </div>
-                  <Button variant="contained" color="primary" style={{marginTop:'20%',marginLeft:'55%'}}
+                  <Button variant="contained" color="primary" style={{marginTop:'-20%',marginRight:'20%'}}
                           onClick={this.changeToNextTab}>המשך</Button>
                 </this.TabPanel>
                 <this.TabPanel value={this.state.value} index={1}>
@@ -293,7 +294,7 @@ export class FormComp extends React.Component<MyProps,MyState> {
                                 handleCheckboxChange={this.handleCheckboxChange}
                                 handleNewTypeChange={this.handleChange}></FoodTypesCheckBox>
                 </div>
-                <Button variant="contained" color="primary" style={{marginTop:'20%',marginLeft:'55%'}} onClick={this.submitAll}>סיום</Button>
+                <Button variant="contained" color="primary" style={{marginTop:'-20%',marginRight:'20%'}} onClick={this.submitAll}>סיום</Button>
                 </this.TabPanel>
             </div>
         );
