@@ -1,10 +1,11 @@
 import pool from '../dbconfig/dbconnector';
 import foodTypesController from './foodTypesController';
+import usersFoodTypesController from './usersFoodTypesController';
 const foodTypeController = new foodTypesController();
+const usersFoodTypeController = new usersFoodTypesController();
 
 class usersController {
 
-  // CHANGE NAME TO ADDUSER
   // adds new user to db, updates user detail if already exists
     public async addUser(req, res) {
         try {
@@ -27,6 +28,9 @@ class usersController {
                   if(req.body.newType){
                     foodTypeController.addType(req,res);
                   }
+                  usersFoodTypeController.addUsersFoodTypes(req,res);
+
+                  res.send(200);
                 }
               })
 
