@@ -26,8 +26,22 @@ class PersonalDetails extends React.Component<MyProps,MyState> {
         super(props);
     
         this.state = {
-          beers:[{id:1,name:"מכבי"},{id:2,name:"קורונה"},{id:3,name:"הייניקן"}]
+          beers:[]
         };
+    }
+
+    // gets beer types from server
+    componentDidMount(){
+        if(this.state.beers.length === 0){
+            fetch('http://localhost:4000/beers')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    ...this.state,
+                    beers: data,
+                });
+            });
+        }   
     }
 
     render() {

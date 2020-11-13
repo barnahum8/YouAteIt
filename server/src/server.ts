@@ -1,6 +1,7 @@
 import express, { Application, Router } from 'express';
 import bodyParser from 'body-parser';
 import foodTypesRoute from './routes/foodTypesRoute';
+import beersRoute from './routes/beersRoute';
 import pool from './dbconfig/dbconnector';
 
 class Server {
@@ -34,6 +35,7 @@ class Server {
 
     private routerConfig() {
         this.app.use('/foodTypes', foodTypesRoute);
+        this.app.use('/beers', beersRoute);
     }
 
     public start = (port: number) => {

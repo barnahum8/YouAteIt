@@ -29,13 +29,13 @@ class FoodTypesCheckBox extends React.Component<MyProps,MyState> {
          <FormControl style={{direction:'rtl',float: 'right'}} required component="fieldset" >
             <FormGroup>
             {this.props.foodTypes?.map((eachType) => {
-                return(<FormControlLabel
+                return(<FormControlLabel key={eachType.id.toString()}
                     control={<Checkbox key={eachType.id.toString()} id={eachType.id.toString()} checked={this.props.checked[eachType.id.toString()]} 
                                 onChange={(event) =>this.props.handleCheckboxChange(event)}/>}
                     label={eachType.name}
                 />)
             })}
-            <FormControlLabel
+            <FormControlLabel key="newType"
                 control={<Checkbox key="newType" id="newType" checked={this.state.newTypeChecked} 
                                    onChange={() => {this.setState({
                                                         ...this.props,
