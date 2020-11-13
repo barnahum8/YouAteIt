@@ -203,6 +203,43 @@ export class FormComp extends React.Component<MyProps,MyState> {
       });
     };
 
+    // validate food types checkbox
+    validCheckbox = () => {
+      let isOneChecked = false;
+      let isValid = false;
+
+      for(let index=0; index<this.state.foodTypes.length && !isOneChecked; index++){
+        isOneChecked = this.state.checked[this.state.foodTypes[index].id];
+      }
+
+      if(isOneChecked || this.state.newType){
+        isValid = true
+      }
+      else {
+        Swal.fire({
+          title: '!שגיאה',
+          text: '.אנא בחר לפחות סוג מזון אחד, או הוסף מזון חדש',
+          icon: 'error',
+          confirmButtonText: 'חזור'
+        })
+      }
+
+      return isValid;
+    }
+
+    // submit all data to server
+    submitAll = () =>{
+      if(this.validPersonalDetails() && this.validCheckbox()){
+        // SUBMIT TO SERVER
+        Swal.fire({
+          title: '!מעולה',
+          text: '.הנתונים נשמרו בהצלחה',
+          icon: 'success',
+          confirmButtonText: 'חזור'
+        })
+      }
+    }
+
     public render() {
         return (
             <div>
@@ -214,30 +251,31 @@ export class FormComp extends React.Component<MyProps,MyState> {
                 </div>
                 <this.TabPanel value={this.state.value} index={0}>
                   <div>
-                  <PersonalDetails firstName = {this.state.firstName}
-                                   lastName = {this.state.lastName}
-                                   date = {this.state.date}
-                                   beer = {this.state.beer}
-                                   id = {this.state.id}
-                                   phone = {this.state.phone}
-                                   handleChange = {this.handleChange}
-                                   isYoungForBeer = {this.isYoungForBeer}
-                                   namesValidation = {this.namesValidation}
-                                   dateValidation = {this.dateValidation}
-                                   idValidation = {this.idValidation}
-                                   phoneValidation = {this.phoneValidation}></PersonalDetails>
+                    <PersonalDetails firstName = {this.state.firstName}
+                                    lastName = {this.state.lastName}
+                                    date = {this.state.date}
+                                    beer = {this.state.beer}
+                                    id = {this.state.id}
+                                    phone = {this.state.phone}
+                                    handleChange = {this.handleChange}
+                                    isYoungForBeer = {this.isYoungForBeer}
+                                    namesValidation = {this.namesValidation}
+                                    dateValidation = {this.dateValidation}
+                                    idValidation = {this.idValidation}
+                                    phoneValidation = {this.phoneValidation}></PersonalDetails>
                   </div>
                   <Button variant="contained" color="primary" style={{marginTop:'20%',marginLeft:'55%'}}
                           onClick={this.changeToNextTab}>המשך</Button>
                 </this.TabPanel>
                 <this.TabPanel value={this.state.value} index={1}>
                 <div>
-                <FoodTypesCheckBox foodTypes={this.state.foodTypes}
-                              checked={this.state.checked}
-                              newType={this.state.newType}
-                              handleCheckboxChange={this.handleCheckboxChange}
-                              handleNewTypeChange={this.handleChange}></FoodTypesCheckBox>
+                  <FoodTypesCheckBox foodTypes={this.state.foodTypes}
+                                checked={this.state.checked}
+                                newType={this.state.newType}
+                                handleCheckboxChange={this.handleCheckboxChange}
+                                handleNewTypeChange={this.handleChange}></FoodTypesCheckBox>
                 </div>
+                <Button variant="contained" color="primary" style={{marginTop:'20%',marginLeft:'55%'}} onClick={this.submitAll}>סיום</Button>
                 </this.TabPanel>
             </div>
         );
