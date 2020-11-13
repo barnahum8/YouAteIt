@@ -1,5 +1,5 @@
 import React from 'react';
-import {Tabs,Tab, Box, Typography} from '@material-ui/core';
+import {Tabs,Tab, Box, Typography, Button} from '@material-ui/core';
 import './FormComp.css';
 import PersonalDetails from '../PersonalDetails/PersonalDetails';
 
@@ -139,6 +139,35 @@ export class FormComp extends React.Component<MyProps,MyState> {
         return isNotValid;
     }
 
+    // validate all personal details
+    validPersonalDetails = () => {
+      let isValid = false;
+
+      if(this.state.firstName.length === 0 ||
+         this.state.lastName.length === 0 ||
+         this.state.date.length === 0 ||
+         (!this.isYoungForBeer() && this.state.beer.length === 0) ||
+         this.state.id.length === 0 ||
+         this.state.phone.length === 0){
+           alert("אנא מלא את כל השדות כנדרש.")
+         } else if(this.namesValidation(this.state.firstName) ||
+                   this.namesValidation(this.state.firstName) ||
+                   this.dateValidation(this.state.date) ||
+                   this.idValidation(this.state.id) ||
+                   this.phoneValidation(this.state.phone)){
+                     alert('קיימת שגיאה באחד הנתונים, בדוק שהזנת הכל נכון')
+                   } else {
+                    isValid = true;
+                   }
+      return isValid;
+    }
+
+    changeToNextTab = () =>{
+      if(this.validPersonalDetails()){
+        this.setState({...this.state,value: 1})
+      }
+    }
+
 
     public render() {
         return (
@@ -164,6 +193,8 @@ export class FormComp extends React.Component<MyProps,MyState> {
                                    idValidation = {this.idValidation}
                                    phoneValidation = {this.phoneValidation}></PersonalDetails>
                   </div>
+                  <Button variant="contained" color="primary" style={{marginLeft:'30%'}} 
+                          onClick={this.changeToNextTab}>המשך</Button>
                 </this.TabPanel>
                 <this.TabPanel value={this.state.value} index={1}>
                 <div>
