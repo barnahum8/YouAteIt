@@ -3,6 +3,7 @@ import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { AppBar } from '@material-ui/core';
 import './HomePage.css';
 import FormComp from '../FormComp/FormComp';
+import Swal from 'sweetalert2';
 
 
 const CLIENT_ID = '213563774258-u65snpotb10nmhh5lniou72ph518auv4.apps.googleusercontent.com';
@@ -44,7 +45,12 @@ export class HomePage extends React.Component<MyProps,MyState> {
   }
 
   handleLogoutFailure = () => {
-    alert('Failed to log out')
+    Swal.fire({
+      title: '!שגיאה',
+      text: '.המערכת לא הצליחה להתחבר',
+      icon: 'error',
+      confirmButtonText: 'נסה שנית'
+    })
   }
 
 
