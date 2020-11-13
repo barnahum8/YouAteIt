@@ -41,9 +41,27 @@ export class FormComp extends React.Component<MyProps,MyState> {
               4: false,
               5: false
             },
-            foodTypes: [{id:1,name:"פסטרמה"},{id:2,name:"ברוקולי"},{id:3,name:"רגל כרושה"},{id:4,name:"לחם מחמצת"},{id:5,name:"קציצת סרטן"}],
+            foodTypes: [],
             newType: ''
         };
+    }
+
+    // gets food types from the server
+    componentDidMount(){
+      fetch('http://localhost:4000/foodTypes')
+        .then(response => response.json())
+        .then(data => {
+          let checkedTemp = {};
+          for(let i=1;i<=data.length;i++){
+            checkedTemp[i] = false;
+          }
+
+          this.setState({
+            ...this.state,
+            foodTypes: data,
+            checked: checkedTemp
+          });
+        });
     }
 
     // changes tabs
