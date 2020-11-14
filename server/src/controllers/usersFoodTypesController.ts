@@ -27,8 +27,6 @@ class usersFoodTypesController {
                 client.query(sql,(err, res) => {
                     if (err) {
                       console.log(err.stack)
-                    } else {
-                      res.send(200);
                     }
                   })
               }

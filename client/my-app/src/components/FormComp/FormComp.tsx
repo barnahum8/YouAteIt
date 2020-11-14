@@ -6,6 +6,7 @@ import FoodTypesCheckBox from '../FoodTypesCheckBox/FoodTypesCheckBox';
 import Swal from 'sweetalert2';
 
 interface MyProps {
+  userEmail: string
 }
 
 interface MyState {
@@ -249,13 +250,54 @@ export class FormComp extends React.Component<MyProps,MyState> {
     // submit all data to server
     submitAll = () =>{
       if(this.validPersonalDetails() && this.validCheckbox()){
-        // SUBMIT TO SERVER
-        Swal.fire({
-          title: '!מעולה',
-          text: '.הנתונים נשמרו בהצלחה',
-          icon: 'success',
-          confirmButtonText: 'חזור'
-        })
+        let foodTypesSelected : number[] = [];
+        for(let index=0; index<this.state.foodTypes.length; index++){
+          if(this.state.checked[this.state.foodTypes[index].id]){
+            foodTypesSelected.push(this.state.foodTypes[index].id);
+          }
+        }
+
+        if(this.state.newType){
+          foodTypesSelected.push(this.state.foodTypes.length+1);
+        }
+
+        let fullData = {
+          "email":this.props.userEmail,
+          "firstname":this.state.firstName,
+          "lastname":this.state.lastName,
+          "birthdate":this.state.date,
+          "beer": this.state.beer,
+          "id": this.state.id,
+          "phone": this.state.phone,
+          "newType":this.state.newType,
+          "foodTypes": foodTypesSelected
+        };
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fullData)
+        };
+
+        fetch('http://localhost:4000/users', requestOptions)
+            .then(response => response)
+            .then(data => {
+              if(data.status == 200){
+                Swal.fire({
+                  title: '!מעולה',
+                  text: '.הנתונים נשמרו בהצלחה',
+                  icon: 'success',
+                  confirmButtonText: 'חזור'
+                })
+              } else {
+                Swal.fire({
+                  title: '!שגיאה',
+                  text: '.נראה שיש בעיה בשמירת הנתונים, אנא נסה שוב במועד מאוחר יותר',
+                  icon: 'error',
+                  confirmButtonText: 'חזור'
+                })
+              }
+            });
       }
     }
 

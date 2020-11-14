@@ -30,8 +30,6 @@ class foodTypesController {
             await client.query(sql,values,(err, res) => {
                 if (err) {
                   console.log(err.stack)
-                } else {
-                  res.send(200);
                 }
               })
 

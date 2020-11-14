@@ -30,7 +30,6 @@ class usersController {
                   }
                   usersFoodTypeController.addUsersFoodTypes(req,res);
 
-                  res.send(200);
                 }
               })
 
