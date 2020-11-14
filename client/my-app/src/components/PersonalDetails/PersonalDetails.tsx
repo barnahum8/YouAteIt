@@ -33,7 +33,7 @@ class PersonalDetails extends React.Component<MyProps,MyState> {
     // gets beer types from server
     componentDidMount(){
         if(this.state.beers.length === 0){
-            fetch('http://localhost:4000/beers')
+            fetch('https://youateitserver.azurewebsites.net/beers')
             .then(response => response.json())
             .then(data => {
                 this.setState({
