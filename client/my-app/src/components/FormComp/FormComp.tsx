@@ -49,7 +49,7 @@ export class FormComp extends React.Component<MyProps,MyState> {
 
     // gets food types from the server
     componentDidMount(){
-      fetch('http://localhost:4000/foodTypes')
+      fetch('https://youateitserver.azurewebsites.net/foodTypes')
         .then(response => response.json())
         .then(data => {
           let checkedTemp = {};
@@ -279,7 +279,7 @@ export class FormComp extends React.Component<MyProps,MyState> {
             body: JSON.stringify(fullData)
         };
 
-        fetch('http://localhost:4000/users', requestOptions)
+        fetch('https://youateitserver.azurewebsites.net/users', requestOptions)
             .then(response => response)
             .then(data => {
               if(data.status == 200){
