@@ -119,7 +119,7 @@ export class FormComp extends React.Component<MyProps,MyState> {
     // validate first and last names
     namesValidation = (name:string) => {
       let isNotValid = false;
-      if(name.length !== 0 && !name.match(/^[a-z\u0590-\u05fe ]+$/)){
+      if(name.length !== 0 && !name.match(/^[a-z\A-Z\u0590-\u05fe]+$/)){
           isNotValid = true;
       }
 

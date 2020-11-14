@@ -60,6 +60,7 @@ export class HomePage extends React.Component<MyProps,MyState> {
           <AppBar position="static">
             <div>
               <h2 className="title">אכלת אותה</h2>
+              <img alt="logo" className="logo" src="logo.png" width='80' height="60"></img>
               <div className="username" hidden={!this.state.isLogined}>
                 <GoogleLogout
                   clientId={ CLIENT_ID }
