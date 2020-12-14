@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import FormComp from './FormComp';
 
-const formFunctions = new FormComp({});
+const formFunctions = new FormComp({userEmail:''});
 
 test('test namesValidation 1', () => {
   const namesVal = formFunctions.namesValidation("123");
