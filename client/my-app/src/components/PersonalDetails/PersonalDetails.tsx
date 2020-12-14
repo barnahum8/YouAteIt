@@ -1,14 +1,19 @@
 import React from 'react';
+import { useForm, Controller } from "react-hook-form";
 import {useState} from 'react';
-import { TextField, FormControl, Select } from '@material-ui/core';
+import { TextField, FormControl, Select,Button } from '@material-ui/core';
 import './PersonalDetails.css';
 
 function PersonalDetails(props) {
+
+    const [loaded,setLoaded] = useState<boolean>(false);
     const [beers, setBeers] = useState<Array<{id:number,name:string}>>([]);
+    const { register, handleSubmit, errors, control } = useForm();
 
     // gets beer types from server
     // https://youateitserver.azurewebsites.net/beers
-    if(beers.length === 0){
+    if(loaded){
+        setLoaded(true);
         fetch('http://localhost:4000/beers')
         .then(response => response.json())
         .then(data => {
@@ -19,43 +24,51 @@ function PersonalDetails(props) {
 
     return (
     <div className="fullpage" dir="rtl">
-        <form noValidate autoComplete="off">
-            <TextField  value={props.firstName}
-                        error={props.namesValidation(props.firstName)}
-                        helperText={props.namesValidation(props.firstName) ? "הכנס שם בעברית או באנגלית בלבד" : ''} 
+        <form onSubmit={handleSubmit(props.changeToNextTab)} noValidate autoComplete="off">
+            <TextField  //value={props.firstName}
+                        name="firstName" 
+                        // error={props.namesValidation(props.firstName)}
+                        // helperText={props.namesValidation(props.firstName) ? "הכנס שם בעברית או באנגלית בלבד" : ''} 
                         inputProps={{ maxLength: 50 }}
                         style={{paddingLeft: '2%',float:'right'}}
                         InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
                         id="firstName" 
                         label="שם פרטי"
-                        onChange={(event) => props.handleChange(event)} />
-            <TextField  value={props.lastName}
-                        error={props.namesValidation(props.lastName)}
-                        helperText={props.namesValidation(props.lastName) ? "הכנס שם בעברית או באנגלית בלבד" : ''}
+                        // onChange={(event) => props.handleChange(event)}
+                        inputRef={register} />
+            <TextField  //value={props.lastName}
+                        name="lastName"
+                        // error={props.namesValidation(props.lastName)}
+                        // helperText={props.namesValidation(props.lastName) ? "הכנס שם בעברית או באנגלית בלבד" : ''}
                         inputProps={{ maxLength: 50 }} 
                         style={{paddingRight: '2%',float:'right'}}
                         InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
                         id="lastName" 
                         label="שם משפחה"
-                        onChange={(event) => props.handleChange(event)} />
+                        // onChange={(event) => props.handleChange(event)}
+                        inputRef={register} />
             <div className="dateandbeer">
                 <p className="label">תאריך לידה:</p>
-                <TextField  value={props.date}
-                            error={props.dateValidation(props.date)}
-                            helperText={props.dateValidation(props.date) ? "תאריך לידה לא חוקי" : ''}
+                <TextField  //value={props.date}
+                            name="date"
+                            // error={props.dateValidation(props.date)}
+                            // helperText={props.dateValidation(props.date) ? "תאריך לידה לא חוקי" : ''}
                             style={{padding:'1%',float: 'right',marginTop:'1%',marginLeft:'3%'}} 
                             id="date" 
                             type="date" 
-                            onChange={(event) => props.handleChange(event)}/>
+                            // onChange={(event) => props.handleChange(event)}
+                            inputRef={register}/>
                 <div hidden={props.isYoungForBeer()}>
                     <p className="label">בירה אהובה:</p>
                     <FormControl className="selectform">
                         <Select
+                        name="beer"
                         id="beer"
                         style={{padding:'2%', marginTop:'10%'}} 
                         native
-                        value={props.beer}
-                        onChange={(event) => props.handleChange(event)}
+                        //value={props.beer}
+                        // onChange={(event) => props.handleChange(event)}
+                        inputRef={register}
                         >
                         <option key="none" aria-label="None" value="" />
                         {beers?.map((eachBeer) => {
@@ -66,25 +79,31 @@ function PersonalDetails(props) {
                 </div>
             </div>
             <div className="field">
-                <TextField  value={props.id}
-                            error={props.idValidation(props.id)}
-                            helperText={props.idValidation(props.id) ? "הכנס תז תקינה כולל ספרת ביקורת" : ''} 
+                <TextField  //value={props.id}
+                            name="id" 
+                            // error={props.idValidation(props.id)}
+                            // helperText={props.idValidation(props.id) ? "הכנס תז תקינה כולל ספרת ביקורת" : ''} 
                             inputProps={{ maxLength: 9 }}
                             InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
                             id="id" 
                             label='ת"ז'
-                            onChange={(event) => props.handleChange(event)} />
+                            // onChange={(event) => props.handleChange(event)}
+                            inputRef={register} />
             </div>
             <div className="field">
-                <TextField  value={props.phone}
-                            error={props.phoneValidation(props.phone)}
-                            helperText={props.phoneValidation(props.phone) ? "הכנס מספר פלאפון נייד תקין" : ''} 
+                <TextField  name="phone" 
+                            //value={props.phone}
+                            // error={props.phoneValidation(props.phone)}
+                            // helperText={props.phoneValidation(props.phone) ? "הכנס מספר פלאפון נייד תקין" : ''} 
                             InputLabelProps={{style:{direction:"rtl",left:"auto"}}}
                             inputProps={{ maxLength: 10 }} 
                             id="phone" 
                             label="טלפון"
-                            onChange={(event) => props.handleChange(event)} />
+                            // onChange={(event) => props.handleChange(event)}
+                            inputRef={register} />
             </div>
+            <Button variant="contained" color="primary"
+                      type='submit'>המשך</Button>
         </form>
     </div>
     )
