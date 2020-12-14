@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { AppBar } from '@material-ui/core';
 import './HomePage.css';
@@ -11,8 +11,8 @@ const CLIENT_ID = '213563774258-u65snpotb10nmhh5lniou72ph518auv4.apps.googleuser
 
 function HomePage(props) {;
 
-    const [isLogined, setIsLogined] = useState<boolean>(false);
-    const [userEmail, setUserEmail] = useState<string>('');
+  const [isLogined, setIsLogined] = useState<boolean>(false);
+  const [userEmail, setUserEmail] = useState<string>('');
 
   // login to google account
   const login =  (response:any) => {
