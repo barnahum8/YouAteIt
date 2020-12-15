@@ -27,7 +27,7 @@ const PersonalDetails = (props) => {
                         return props.dateValidation(value);
                     }),
         beer: yup.string().when('date', (date, schema) => {
-            return props.isYoungForBeer(date) ? schema.required('אנא מלא שדה זה.') : schema.min(0);
+            return props.isOldForBeer(date) ? schema.required('אנא מלא שדה זה.') : schema.min(0);
           }),
         id: yup.string()
                     .required('אנא מלא שדה זה.')
@@ -66,49 +66,42 @@ const PersonalDetails = (props) => {
             fetch('http://localhost:4000/beers')
             .then(response => response.json())
             .then(data => {
-                console.log("fghfghg")
                 setBeers(data);
             });
         }
-    });
+    },[loaded]);
 
     return (
     <div className="fullpage" dir="rtl">
         <form onSubmit={handleSubmit(props.changeToNextTab)} noValidate autoComplete="off">
-            <TextField  //value={props.firstName}
-                        name="firstName" 
-                        error={errors.firstName}
+            <TextField  name="firstName" 
+                        error={errors.firstName !== undefined}
                         helperText={errors.firstName? errors.firstName.message : ''} 
                         inputProps={{ maxLength: 50 }}
                         style={{paddingLeft: '2%',float:'right'}}
                         InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
                         id="firstName" 
                         label="שם פרטי"
-                        // onChange={(event) => props.handleChange(event)}
                         inputRef={register} />
-            <TextField  //value={props.lastName}
-                        name="lastName"
-                        error={errors.lastName}
+            <TextField  name="lastName"
+                        error={errors.lastName !== undefined}
                         helperText={errors.lastName? errors.lastName.message : ''}
                         inputProps={{ maxLength: 50 }} 
                         style={{paddingRight: '2%',float:'right'}}
                         InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
                         id="lastName" 
                         label="שם משפחה"
-                        // onChange={(event) => props.handleChange(event)}
                         inputRef={register} />
             <div className="dateandbeer">
                 <p className="label">תאריך לידה:</p>
-                <TextField  //value={props.date}
-                            name="date"
-                            error={errors.date}
+                <TextField  name="date"
+                            error={errors.date !== undefined}
                             helperText={errors.date? errors.date.message : ''}
                             style={{padding:'1%',float: 'right',marginTop:'1%',marginLeft:'3%'}} 
                             id="date" 
                             type="date" 
-                            // onChange={(event) => props.handleChange(event)}
                             inputRef={register}/>
-                <div hidden={!props.isYoungForBeer(dateValue)}>
+                <div hidden={!props.isOldForBeer(dateValue)}>
                     <p className="label">בירה אהובה:</p>
                     <FormControl className="selectform">
                         <Select
@@ -116,10 +109,7 @@ const PersonalDetails = (props) => {
                         id="beer"
                         style={{padding:'2%', marginTop:'10%'}} 
                         native
-                        //value={props.beer}
-                        // onChange={(event) => props.handleChange(event)}
-                        inputRef={register}
-                        >
+                        inputRef={register}>
                         <option key="none" aria-label="None" value="" />
                         {beers?.map((eachBeer) => {
                             return(<option key={eachBeer.id} value={eachBeer.id}>{eachBeer.name}</option>)
@@ -129,31 +119,27 @@ const PersonalDetails = (props) => {
                 </div>
             </div>
             <div className="field">
-                <TextField  //value={props.id}
-                            name="id" 
-                            error={errors.id}
+                <TextField  name="id" 
+                            error={errors.id !== undefined}
                             helperText={errors.id? errors.id.message : ''} 
                             inputProps={{ maxLength: 9 }}
                             InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
                             id="id" 
                             label='ת"ז'
-                            // onChange={(event) => props.handleChange(event)}
                             inputRef={register} />
             </div>
             <div className="field">
                 <TextField  name="phone" 
-                            //value={props.phone}
-                            error={errors.phone}
+                            error={errors.phone !== undefined}
                             helperText={errors.phone? errors.phone.message : ''}  
                             InputLabelProps={{style:{direction:"rtl",left:"auto"}}}
                             inputProps={{ maxLength: 10 }} 
                             id="phone" 
                             label="טלפון"
-                            // onChange={(event) => props.handleChange(event)}
                             inputRef={register} />
             </div>
-            <Button variant="contained" color="primary"
-                      type='submit'>המשך</Button>
+            <Button variant="contained" color="primary" style={{marginTop:'20%',width: '10%'}} 
+                      type='submit'>שמור והמשך</Button>
         </form>
     </div>
     )

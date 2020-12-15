@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Tabs,Tab, Box, Typography, Button} from '@material-ui/core';
+import {Tabs,Tab, Box, Typography} from '@material-ui/core';
 import './FormComp.css';
 import PersonalDetails from '../PersonalDetails/PersonalDetails';
 import FoodTypesCheckBox from '../FoodTypesCheckBox/FoodTypesCheckBox';
@@ -7,15 +7,7 @@ import Swal from 'sweetalert2';
 
 const FormComp = (props) => {
   const [value, setValue] = useState<number>(0);
-  const [checked, setChecked] = useState<{}>({checked: {
-                                              1: false,
-                                              2: false,
-                                              3: false,
-                                              4: false,
-                                              5: false
-                                            }});
   const [foodTypes,setFoodTypes] = useState<Array<{id:number,name:string}>>([]);
-  const [newType,setNewType] = useState<string>('');
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [date, setDate] = useState<string>('');
@@ -32,16 +24,16 @@ const FormComp = (props) => {
         fetch('http://localhost:4000/foodTypes')
         .then(response => response.json())
         .then(data => {
-          let checkedTemp = {};
-          for(let i=1;i<=data.length;i++){
-            checkedTemp[i] = false;
-          }
+          // let checkedTemp = {};
+          // for(let i=1;i<=data.length;i++){
+          //   checkedTemp[i] = false;
+          // }
 
           setFoodTypes(data);
-          setChecked(checkedTemp);
+          //setChecked(checkedTemp);
         });
       }
-    });
+    },[loaded]);
 
     // changes tabs
     const handleTabChange = (event:any,newValue:number) => {
@@ -70,13 +62,8 @@ const FormComp = (props) => {
       );
     }
 
-    // changes field based on the parameter
-    const handleNewTypeChange = (event:any) => {
-        setNewType(event.target.value);
-    };
-
     // checks if the user is young or old for beer option
-    const isYoungForBeer = (date) => {
+    const isOldForBeer = (date) => {
       const birthDate = new Date().getTime() - 1000*60*60*24*365.2425*18
       let isOldEnough = false;
       
@@ -90,7 +77,7 @@ const FormComp = (props) => {
     // validate first and last names
     const namesValidation = (name:string) => {
       let isValid = true;
-      if(!name.match(/^[a-z\A-Z\u0590-\u05fe]+$/)){
+      if(!name.match(/^[a-z\A-Z\u0590-\u05fe]+$/)) {
         isValid = false;
       }
 
@@ -142,28 +129,17 @@ const FormComp = (props) => {
     }
 
     const changeToNextTab = (data) =>{
-      console.log(data);
       setFirstName(data.firstName);
       setLastName(data.lastName);
       setDate(data.date);
-      if(data.beer){
-        setBeer(data.beer);
-      }
+      setBeer(data.beer);
       setId(data.id);
       setPhone(data.phone);
       setValue(1);
     }
 
-    // changes food types checkbox value
-    const handleCheckboxChange = (event:any) => {
-      const id = event.target.id;
-      const newChecked = checked;
-      newChecked[id] = !newChecked[id];
-      setChecked(newChecked);
-    };
-
     // validate food types checkbox
-    const validCheckbox = () => {
+    const validCheckbox = (checked) => {
       let isOneChecked = false;
       let isValid = false;
 
@@ -171,7 +147,7 @@ const FormComp = (props) => {
         isOneChecked = checked[foodTypes[index].id];
       }
 
-      if(isOneChecked || newType){
+      if(isOneChecked || (checked.newTypeCB && checked.newType)){
         isValid = true;
       }
       else {
@@ -186,17 +162,29 @@ const FormComp = (props) => {
       return isValid;
     }
 
+    const validPersonal = () => {
+      if(firstName && namesValidation(firstName) &&
+      lastName && namesValidation(lastName) &&
+      date && dateValidation(date) &&
+      (!isOldForBeer(date) || beer) &&
+      id && idValidation(id) &&
+      phone && phoneValidation(phone)){
+        return false;
+      }
+      return true;
+    }
+
     // submit all data to server
-    const submitAll = () =>{
-      if(validCheckbox()){
+    const submitAll = (data) =>{
+      if(validCheckbox(data)){
         let foodTypesSelected : number[] = [];
         for(let index=0; index<foodTypes.length; index++){
-          if(checked[foodTypes[index].id]){
+          if(data[foodTypes[index].id]){
             foodTypesSelected.push(foodTypes[index].id);
           }
         }
 
-        if(newType){
+        if(data.newType){
           foodTypesSelected.push(foodTypes.length+1);
         }
 
@@ -208,7 +196,7 @@ const FormComp = (props) => {
           "beer": beer,
           "id": id,
           "phone": phone,
-          "newType": newType,
+          "newType": data.newType,
           "foodTypes": foodTypesSelected
         };
 
@@ -222,7 +210,7 @@ const FormComp = (props) => {
         fetch('http://localhost:4000/users', requestOptions)
             .then(response => response)
             .then(data => {
-              if(data.status == 200){
+              if(data.status === 200){
                 Swal.fire({
                   title: '!מעולה',
                   text: '.הנתונים נשמרו בהצלחה',
@@ -246,7 +234,7 @@ const FormComp = (props) => {
             <div className="mainbar">
                 <Tabs value={value} onChange={handleTabChange} aria-label="simple tabs example">
                     <Tab label="פרטים אישיים" />
-                    <Tab label="מאכלים אהובים"/>
+                    <Tab disabled={validPersonal()} label="מאכלים אהובים"/>
                 </Tabs>
             </div>
             <TabPanel value={value} index={0}>
@@ -258,7 +246,7 @@ const FormComp = (props) => {
                                 beer = {beer}
                                 id = {id}
                                 phone = {phone}
-                                isYoungForBeer = {isYoungForBeer}
+                                isOldForBeer = {isOldForBeer}
                                 namesValidation = {namesValidation}
                                 dateValidation = {dateValidation}
                                 idValidation = {idValidation}
@@ -269,12 +257,8 @@ const FormComp = (props) => {
             <TabPanel value={value} index={1}>
             <div>
               <FoodTypesCheckBox foodTypes={foodTypes}
-                            checked={checked}
-                            newType={newType}
-                            handleCheckboxChange={handleCheckboxChange}
-                            handleNewTypeChange={handleNewTypeChange}></FoodTypesCheckBox>
+                            submitAll={submitAll}></FoodTypesCheckBox>
             </div>
-            <Button variant="contained" color="primary" style={{marginTop:'-20%',marginRight:'20%'}} onClick={submitAll}>סיום</Button>
             </TabPanel>
         </div>
     );
