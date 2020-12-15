@@ -38,6 +38,12 @@ function FormComp(props) {
                                             }});
   const [foodTypes,setFoodTypes] = useState<Array<{id:number,name:string}>>([]);
   const [newType,setNewType] = useState<string>('');
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [date, setDate] = useState<string>('');
+  const [beer, setBeer] = useState<string>('');
+  const [id, setId] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
 
     // gets food types from the server 
     // https://youateitserver.azurewebsites.net/foodTypes
@@ -159,8 +165,8 @@ function FormComp(props) {
     }
 
     // validate all personal details
-    const validPersonalDetails = () => {
-      let isValid = false;
+    // const validPersonalDetails = () => {
+    //   let isValid = false;
 
       // if(this.state.firstName.length === 0 ||
       //    this.state.lastName.length === 0 ||
@@ -188,14 +194,20 @@ function FormComp(props) {
       //              } else {
       //               isValid = true;
       //              }
-      return isValid;
-    }
+    //   return isValid;
+    // }
 
     const changeToNextTab = (data) =>{
       console.log(data);
-      // if(validPersonalDetails()){
-      //   setValue(1);
-      // }
+      setFirstName(data.firstName);
+      setLastName(data.lastName);
+      setDate(data.date);
+      if(data.beer){
+        setBeer(data.beer);
+      }
+      setId(data.id);
+      setPhone(data.phone);
+      setValue(1);
     }
 
     // changes food types checkbox value
@@ -296,12 +308,12 @@ function FormComp(props) {
             <TabPanel value={value} index={0}>
               <div>
                 <PersonalDetails 
-                                // firstName = {this.state.firstName}
-                                // lastName = {this.state.lastName}
-                                // date = {this.state.date}
-                                // beer = {this.state.beer}
-                                // id = {this.state.id}
-                                // phone = {this.state.phone}
+                                firstName = {firstName}
+                                lastName = {lastName}
+                                date = {date}
+                                beer = {beer}
+                                id = {id}
+                                phone = {phone}
                                 handleChange = {handleChange}
                                 isYoungForBeer = {isYoungForBeer}
                                 namesValidation = {namesValidation}

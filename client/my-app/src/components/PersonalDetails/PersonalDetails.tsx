@@ -28,7 +28,9 @@ function PersonalDetails(props) {
                     .test('date','תאריך לידה לא חוקי',(value)=>{
                         return props.dateValidation(value);
                     }),
-        beer: yup.string().required('אנא מלא שדה זה.'),
+        beer: yup.string().when('date', (date, schema) => {
+            return props.isYoungForBeer(date) ? schema.required('אנא מלא שדה זה.') : schema.min(0);
+          }),
         id: yup.string()
                     .required('אנא מלא שדה זה.')
                     .test('id','הכנס תז תקינה כולל ספרת ביקורת',(value)=>{
@@ -45,6 +47,14 @@ function PersonalDetails(props) {
     const [beers, setBeers] = useState<Array<{id:number,name:string}>>([]);
     const { register, handleSubmit, errors, control } = useForm({
         mode: 'all',
+        defaultValues:{
+            firstName: props.firstName,
+            lastName: props.lastName,
+            date: props.date,
+            beer: props.beer,
+            id: props.id,
+            phone: props.phone,
+        },
         resolver: yupResolver(schema)
     });
 
