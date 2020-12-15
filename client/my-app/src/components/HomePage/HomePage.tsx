@@ -56,7 +56,7 @@ const HomePage = (props) => {;
           </div>
         </AppBar>
         { isLogined ?
-          <FormComp userEmail={userEmail}></FormComp>: <div className="comp">
+          <FormComp userEmail={userEmail}/> : <div className="comp">
               <h2>...ברוכים הבאים לאכלת אותה! בואו נתחבר ומיד נתחיל</h2>
               <GoogleLogin
               clientId={ CLIENT_ID }
