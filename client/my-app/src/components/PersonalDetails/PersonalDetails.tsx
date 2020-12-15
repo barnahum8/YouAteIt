@@ -6,24 +6,41 @@ import './PersonalDetails.css';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 
-yup.addMethod(yup.string, 'nameValid', (value) => {
-    return value.match(/^[a-z\A-Z\u0590-\u05fe]+$/);
-})
 
-const schema = yup.object().shape({
-    firstName: yup.string()
-                .max(50,'ניתן להזין עד 50 תווים')
-                .required('אנא מלא שדה זה.'),
-    lastName: yup.string()
-                .max(50,'ניתן להזין עד 50 תווים')
-                .required('אנא מלא שדה זה.'),
-    date: yup.string().required('אנא מלא שדה זה.'),
-    beer: yup.string().required('אנא מלא שדה זה.'),
-    id: yup.string().required('אנא מלא שדה זה.'),
-    phone: yup.string().required('אנא מלא שדה זה.'),
-  });
 
 function PersonalDetails(props) {
+
+    const schema = yup.object().shape({
+        firstName: yup.string()
+                    .max(50,'ניתן להזין עד 50 תווים')
+                    .required('אנא מלא שדה זה.')
+                    .test('firstName','הכנס שם בעברית או באנגלית בלבד',(value)=>{
+                        return props.namesValidation(value);
+                    }),
+        lastName: yup.string()
+                    .max(50,'ניתן להזין עד 50 תווים')
+                    .required('אנא מלא שדה זה.')
+                    .test('lastName','הכנס שם בעברית או באנגלית בלבד',(value)=>{
+                        return props.namesValidation(value);
+                    }),
+        date: yup.string()
+                    .required('אנא מלא שדה זה.')
+                    .test('date','תאריך לידה לא חוקי',(value)=>{
+                        return props.dateValidation(value);
+                    }),
+        beer: yup.string().required('אנא מלא שדה זה.'),
+        id: yup.string()
+                    .required('אנא מלא שדה זה.')
+                    .test('id','הכנס תז תקינה כולל ספרת ביקורת',(value)=>{
+                        return props.idValidation(value);
+                    }),
+        phone: yup.string()
+                    .required('אנא מלא שדה זה.')
+                    .test('phone','הכנס מספר פלאפון נייד תקין',(value)=>{
+                        return props.phoneValidation(value);
+                    }),
+      });
+
     const [loaded,setLoaded] = useState<boolean>(false);
     const [beers, setBeers] = useState<Array<{id:number,name:string}>>([]);
     const { register, handleSubmit, errors, control } = useForm({
