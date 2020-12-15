@@ -3,7 +3,7 @@ import {useState} from 'react';
 import { TextField, FormControl, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
 import './FoodTypesCheckBox.css';
 
-function FoodTypesCheckBox(props) {
+const FoodTypesCheckBox = (props) => {
     const [newTypeChecked, setNewTypeChecked] = useState<boolean>(false);
 
     return (

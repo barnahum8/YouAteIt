@@ -1,33 +1,11 @@
-import React, { useState } from 'react';
-import { useForm } from "react-hook-form";
+import React, { useState, useEffect } from 'react';
 import {Tabs,Tab, Box, Typography, Button} from '@material-ui/core';
 import './FormComp.css';
 import PersonalDetails from '../PersonalDetails/PersonalDetails';
 import FoodTypesCheckBox from '../FoodTypesCheckBox/FoodTypesCheckBox';
 import Swal from 'sweetalert2';
 
-interface MyProps {
-  userEmail: string
-}
-
-interface MyState {
-    value: number,
-    firstName: string,
-    lastName: string,
-    date: string,
-    beer: string,
-    id: string,
-    phone: string,
-    foodTypes: Array<{id:number,name:string}>,
-    checked: {},
-    newType: string
-}
-
-function FormComp(props) {
-  
-  const { register, handleSubmit, watch, errors } = useForm();
-
-  const [loaded,setLoaded] = useState<boolean>(false);
+const FormComp = (props) => {
   const [value, setValue] = useState<number>(0);
   const [checked, setChecked] = useState<{}>({checked: {
                                               1: false,
@@ -47,8 +25,7 @@ function FormComp(props) {
 
     // gets food types from the server 
     // https://youateitserver.azurewebsites.net/foodTypes
-    if(loaded){
-      setLoaded(true);
+    useEffect(() => {
       fetch('http://localhost:4000/foodTypes')
       .then(response => response.json())
       .then(data => {
@@ -60,7 +37,7 @@ function FormComp(props) {
         setFoodTypes(data);
         setChecked(checkedTemp);
       });
-    }  
+    });
 
     // changes tabs
     const handleTabChange = (event:any,newValue:number) => {
@@ -90,12 +67,8 @@ function FormComp(props) {
     }
 
     // changes field based on the parameter
-    const handleChange = (event:any) => {
-        // const name = event.target.id;
-        // this.setState({
-        //   ...this.state,
-        //   [name]: event.target.value,
-        // });
+    const handleNewTypeChange = (event:any) => {
+        setNewType(event.target.value);
     };
 
     // checks if the user is young or old for beer option
@@ -164,39 +137,6 @@ function FormComp(props) {
         return isValid;
     }
 
-    // validate all personal details
-    // const validPersonalDetails = () => {
-    //   let isValid = false;
-
-      // if(this.state.firstName.length === 0 ||
-      //    this.state.lastName.length === 0 ||
-      //    this.state.date.length === 0 ||
-      //    (!this.isYoungForBeer() && this.state.beer.length === 0) ||
-      //    this.state.id.length === 0 ||
-      //    this.state.phone.length === 0){
-      //       Swal.fire({
-      //         title: '!שגיאה',
-      //         text: '.אנא מלא את כל השדות כנדרש',
-      //         icon: 'error',
-      //         confirmButtonText: 'חזור'
-      //       })
-      //    } else if(this.namesValidation(this.state.firstName) ||
-      //              this.namesValidation(this.state.firstName) ||
-      //              this.dateValidation(this.state.date) ||
-      //              this.idValidation(this.state.id) ||
-      //              this.phoneValidation(this.state.phone)){
-      //                Swal.fire({
-      //                 title: '!שגיאה',
-      //                 text: '.קיימת שגיאה באחד הנתונים, בדוק שהזנת הכל נכון',
-      //                 icon: 'error',
-      //                 confirmButtonText: 'חזור'
-      //               })
-      //              } else {
-      //               isValid = true;
-      //              }
-    //   return isValid;
-    // }
-
     const changeToNextTab = (data) =>{
       console.log(data);
       setFirstName(data.firstName);
@@ -244,57 +184,57 @@ function FormComp(props) {
 
     // submit all data to server
     const submitAll = () =>{
-      // if(validPersonalDetails() && validCheckbox()){
-      //   let foodTypesSelected : number[] = [];
-      //   for(let index=0; index<foodTypes.length; index++){
-      //     if(checked[foodTypes[index].id]){
-      //       foodTypesSelected.push(foodTypes[index].id);
-      //     }
-      //   }
+      if(validCheckbox()){
+        let foodTypesSelected : number[] = [];
+        for(let index=0; index<foodTypes.length; index++){
+          if(checked[foodTypes[index].id]){
+            foodTypesSelected.push(foodTypes[index].id);
+          }
+        }
 
-      //   if(newType){
-      //     foodTypesSelected.push(foodTypes.length+1);
-      //   }
+        if(newType){
+          foodTypesSelected.push(foodTypes.length+1);
+        }
 
-      //   let fullData = {
-      //     "email":props.userEmail,
-      //     "firstname":this.state.firstName,
-      //     "lastname":this.state.lastName,
-      //     "birthdate":this.state.date,
-      //     "beer": this.state.beer,
-      //     "id": this.state.id,
-      //     "phone": this.state.phone,
-      //     "newType":newType,
-      //     "foodTypes": foodTypesSelected
-      //   };
+        let fullData = {
+          "email": props.userEmail,
+          "firstname": firstName,
+          "lastname": lastName,
+          "birthdate": date,
+          "beer": beer,
+          "id": id,
+          "phone": phone,
+          "newType": newType,
+          "foodTypes": foodTypesSelected
+        };
 
-      //   const requestOptions = {
-      //       method: 'POST',
-      //       headers: { 'Content-Type': 'application/json' },
-      //       body: JSON.stringify(fullData)
-      //   };
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fullData)
+        };
 
-      //   // https://youateitserver.azurewebsites.net/users
-      //   fetch('http://localhost:4000/users', requestOptions)
-      //       .then(response => response)
-      //       .then(data => {
-      //         if(data.status == 200){
-      //           Swal.fire({
-      //             title: '!מעולה',
-      //             text: '.הנתונים נשמרו בהצלחה',
-      //             icon: 'success',
-      //             confirmButtonText: 'חזור'
-      //           })
-      //         } else {
-      //           Swal.fire({
-      //             title: '!שגיאה',
-      //             text: '.נראה שיש בעיה בשמירת הנתונים, אנא נסה שוב במועד מאוחר יותר',
-      //             icon: 'error',
-      //             confirmButtonText: 'חזור'
-      //           })
-      //         }
-      //       });
-     // }
+        // https://youateitserver.azurewebsites.net/users
+        fetch('http://localhost:4000/users', requestOptions)
+            .then(response => response)
+            .then(data => {
+              if(data.status == 200){
+                Swal.fire({
+                  title: '!מעולה',
+                  text: '.הנתונים נשמרו בהצלחה',
+                  icon: 'success',
+                  confirmButtonText: 'חזור'
+                })
+              } else {
+                Swal.fire({
+                  title: '!שגיאה',
+                  text: '.נראה שיש בעיה בשמירת הנתונים, אנא נסה שוב במועד מאוחר יותר',
+                  icon: 'error',
+                  confirmButtonText: 'חזור'
+                })
+              }
+            });
+     }
     }
 
     return (
@@ -314,7 +254,6 @@ function FormComp(props) {
                                 beer = {beer}
                                 id = {id}
                                 phone = {phone}
-                                handleChange = {handleChange}
                                 isYoungForBeer = {isYoungForBeer}
                                 namesValidation = {namesValidation}
                                 dateValidation = {dateValidation}
@@ -329,7 +268,7 @@ function FormComp(props) {
                             checked={checked}
                             newType={newType}
                             handleCheckboxChange={handleCheckboxChange}
-                            handleNewTypeChange={handleChange}></FoodTypesCheckBox>
+                            handleNewTypeChange={handleNewTypeChange}></FoodTypesCheckBox>
             </div>
             <Button variant="contained" color="primary" style={{marginTop:'-20%',marginRight:'20%'}} onClick={submitAll}>סיום</Button>
             </TabPanel>

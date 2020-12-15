@@ -11,7 +11,7 @@ class Server {
     constructor() {
         this.app = express();
 
-        this.app.use(function(req, res, next) {
+        this.app.use((req, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
@@ -28,7 +28,7 @@ class Server {
     }
 
     private dbConnect() {
-        pool.connect(function (err, client, done) {
+        pool.connect( (err, client, done) => {
             if (err) throw new Error(err);
             console.log('Connected');
           }); 

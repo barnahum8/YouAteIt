@@ -1,6 +1,6 @@
-import React from 'react';
-import { useForm, Controller } from "react-hook-form";
-import {useState} from 'react';
+import React,{ useEffect } from 'react';
+import { useForm } from "react-hook-form";
+import { useState } from 'react';
 import { TextField, FormControl, Select,Button } from '@material-ui/core';
 import './PersonalDetails.css';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,7 +8,7 @@ import * as yup from "yup";
 
 
 
-function PersonalDetails(props) {
+const PersonalDetails = (props) => {
 
     const schema = yup.object().shape({
         firstName: yup.string()
@@ -42,10 +42,8 @@ function PersonalDetails(props) {
                         return props.phoneValidation(value);
                     }),
       });
-
-    const [loaded,setLoaded] = useState<boolean>(false);
     const [beers, setBeers] = useState<Array<{id:number,name:string}>>([]);
-    const { register, handleSubmit, errors, control } = useForm({
+    const { register, handleSubmit, errors, watch } = useForm({
         mode: 'all',
         defaultValues:{
             firstName: props.firstName,
@@ -57,18 +55,17 @@ function PersonalDetails(props) {
         },
         resolver: yupResolver(schema)
     });
+    const dateValue = watch('date');
 
     // gets beer types from server
     // https://youateitserver.azurewebsites.net/beers
-    if(loaded){
-        setLoaded(true);
+    useEffect(() => {
         fetch('http://localhost:4000/beers')
         .then(response => response.json())
         .then(data => {
             setBeers(data);
         });
-    }  
-
+    });
 
     return (
     <div className="fullpage" dir="rtl">
@@ -106,7 +103,7 @@ function PersonalDetails(props) {
                             type="date" 
                             // onChange={(event) => props.handleChange(event)}
                             inputRef={register}/>
-                <div hidden={!props.isYoungForBeer()}>
+                <div hidden={!props.isYoungForBeer(dateValue)}>
                     <p className="label">בירה אהובה:</p>
                     <FormControl className="selectform">
                         <Select

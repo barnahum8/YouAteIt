@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 
 const CLIENT_ID = '213563774258-u65snpotb10nmhh5lniou72ph518auv4.apps.googleusercontent.com';
 
-function HomePage(props) {;
+const HomePage = (props) => {;
 
   const [isLogined, setIsLogined] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState<string>('');
