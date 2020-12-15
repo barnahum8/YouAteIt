@@ -23,11 +23,11 @@ const FoodTypesCheckBox = (props) => {
     <div dir="ltr" className="fullpage">
          <FormControl style={{direction:'rtl',float: 'right'}} required component="fieldset" >
             <FormGroup>
-            {props.foodTypes?.map((eachType) => {
-                return(<FormControlLabel key={eachType.id.toString()}
-                    control={<Checkbox name={eachType.id.toString()} inputRef={register} 
-                                key={eachType.id.toString()} id={eachType.id.toString()} />}
-                    label={eachType.name}
+            {props.foodTypes?.map((foodType) => {
+                return(<FormControlLabel key={foodType.id.toString()}
+                    control={<Checkbox name={foodType.id.toString()} inputRef={register} 
+                                key={foodType.id.toString()} id={foodType.id.toString()} />}
+                    label={foodType.name}
                 />)
             })}
             <FormControlLabel key="newType"
