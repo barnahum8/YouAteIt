@@ -22,21 +22,25 @@ const FormComp = (props) => {
   const [beer, setBeer] = useState<string>('');
   const [id, setId] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
+  const [loaded,setLoaded] = useState<boolean>(false);
 
     // gets food types from the server 
     // https://youateitserver.azurewebsites.net/foodTypes
     useEffect(() => {
-      fetch('http://localhost:4000/foodTypes')
-      .then(response => response.json())
-      .then(data => {
-        let checkedTemp = {};
-        for(let i=1;i<=data.length;i++){
-          checkedTemp[i] = false;
-        }
+      if(!loaded){
+        setLoaded(true);
+        fetch('http://localhost:4000/foodTypes')
+        .then(response => response.json())
+        .then(data => {
+          let checkedTemp = {};
+          for(let i=1;i<=data.length;i++){
+            checkedTemp[i] = false;
+          }
 
-        setFoodTypes(data);
-        setChecked(checkedTemp);
-      });
+          setFoodTypes(data);
+          setChecked(checkedTemp);
+        });
+      }
     });
 
     // changes tabs
@@ -168,7 +172,7 @@ const FormComp = (props) => {
       }
 
       if(isOneChecked || newType){
-        isValid = true
+        isValid = true;
       }
       else {
         Swal.fire({

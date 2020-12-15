@@ -6,8 +6,6 @@ import './PersonalDetails.css';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 
-
-
 const PersonalDetails = (props) => {
 
     const schema = yup.object().shape({
@@ -42,7 +40,10 @@ const PersonalDetails = (props) => {
                         return props.phoneValidation(value);
                     }),
       });
+
     const [beers, setBeers] = useState<Array<{id:number,name:string}>>([]);
+    const [loaded,setLoaded] = useState<boolean>(false);
+
     const { register, handleSubmit, errors, watch } = useForm({
         mode: 'all',
         defaultValues:{
@@ -60,11 +61,15 @@ const PersonalDetails = (props) => {
     // gets beer types from server
     // https://youateitserver.azurewebsites.net/beers
     useEffect(() => {
-        fetch('http://localhost:4000/beers')
-        .then(response => response.json())
-        .then(data => {
-            setBeers(data);
-        });
+        if(!loaded){
+            setLoaded(true);
+            fetch('http://localhost:4000/beers')
+            .then(response => response.json())
+            .then(data => {
+                console.log("fghfghg")
+                setBeers(data);
+            });
+        }
     });
 
     return (
