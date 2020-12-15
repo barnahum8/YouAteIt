@@ -95,41 +95,39 @@ function FormComp(props) {
     // checks if the user is young or old for beer option
     const isYoungForBeer = (date) => {
       const birthDate = new Date().getTime() - 1000*60*60*24*365.2425*18
-      let isNotOver = true;
+      let isOldEnough = false;
       
       if(new Date(date).getTime() < birthDate){
-          isNotOver = false;
+        isOldEnough = true;
       }
 
-      return isNotOver;
+      return isOldEnough;
     }
 
     // validate first and last names
     const namesValidation = (name:string) => {
-      let isNotValid = false;
-      if(name.length !== 0 && !name.match(/^[a-z\A-Z\u0590-\u05fe]+$/)){
-          isNotValid = true;
+      let isValid = true;
+      if(!name.match(/^[a-z\A-Z\u0590-\u05fe]+$/)){
+        isValid = false;
       }
 
-      return isNotValid;
+      return isValid;
     }
 
     // validate birth date
     const dateValidation = (date:string) => {
-      let isNotValid = false;
+      let isValid = true;
       if(new Date(date).getTime() > Date.now()){
-          isNotValid = true;
+        isValid = false;
       }
 
-      return isNotValid;
+      return isValid;
     }
 
     // validate id
     const idValidation = (id:any) =>{
-      let isNotValid = true;
-      if(id.length === 0){
-          isNotValid = false;
-      } else if(id.length === 9){
+      let isValid = false;
+      if(id.length === 9){
           let digSum = 0;
           let SecondValue = 0;
           let firstValue = 0;
@@ -142,23 +140,22 @@ function FormComp(props) {
               }
           }
 
-          isNotValid = !(digSum%10 === 0)
+          isValid = (digSum%10 === 0)
       }
       
-      return isNotValid;
+      return isValid;
     }
 
     // validate phone number
     const phoneValidation = (phone:string) => {
-        let isNotValid = false;
-        if(phone.length !== 0 && 
-           (!phone.match(/^[0-9]*$/) || 
+        let isValid = true;
+        if((!phone.match(/^[0-9]*$/) || 
            phone.charAt(0) !== '0' || 
            phone.length !== 10)){
-            isNotValid = true;
+            isValid = false;
         }
 
-        return isNotValid;
+        return isValid;
     }
 
     // validate all personal details

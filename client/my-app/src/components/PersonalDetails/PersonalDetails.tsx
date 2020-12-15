@@ -3,12 +3,33 @@ import { useForm, Controller } from "react-hook-form";
 import {useState} from 'react';
 import { TextField, FormControl, Select,Button } from '@material-ui/core';
 import './PersonalDetails.css';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+yup.addMethod(yup.string, 'nameValid', (value) => {
+    return value.match(/^[a-z\A-Z\u0590-\u05fe]+$/);
+})
+
+const schema = yup.object().shape({
+    firstName: yup.string()
+                .max(50,'ניתן להזין עד 50 תווים')
+                .required('אנא מלא שדה זה.'),
+    lastName: yup.string()
+                .max(50,'ניתן להזין עד 50 תווים')
+                .required('אנא מלא שדה זה.'),
+    date: yup.string().required('אנא מלא שדה זה.'),
+    beer: yup.string().required('אנא מלא שדה זה.'),
+    id: yup.string().required('אנא מלא שדה זה.'),
+    phone: yup.string().required('אנא מלא שדה זה.'),
+  });
 
 function PersonalDetails(props) {
-
     const [loaded,setLoaded] = useState<boolean>(false);
     const [beers, setBeers] = useState<Array<{id:number,name:string}>>([]);
-    const { register, handleSubmit, errors, control } = useForm();
+    const { register, handleSubmit, errors, control } = useForm({
+        mode: 'all',
+        resolver: yupResolver(schema)
+    });
 
     // gets beer types from server
     // https://youateitserver.azurewebsites.net/beers
@@ -27,8 +48,8 @@ function PersonalDetails(props) {
         <form onSubmit={handleSubmit(props.changeToNextTab)} noValidate autoComplete="off">
             <TextField  //value={props.firstName}
                         name="firstName" 
-                        // error={props.namesValidation(props.firstName)}
-                        // helperText={props.namesValidation(props.firstName) ? "הכנס שם בעברית או באנגלית בלבד" : ''} 
+                        error={errors.firstName}
+                        helperText={errors.firstName? errors.firstName.message : ''} 
                         inputProps={{ maxLength: 50 }}
                         style={{paddingLeft: '2%',float:'right'}}
                         InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
@@ -38,8 +59,8 @@ function PersonalDetails(props) {
                         inputRef={register} />
             <TextField  //value={props.lastName}
                         name="lastName"
-                        // error={props.namesValidation(props.lastName)}
-                        // helperText={props.namesValidation(props.lastName) ? "הכנס שם בעברית או באנגלית בלבד" : ''}
+                        error={errors.lastName}
+                        helperText={errors.lastName? errors.lastName.message : ''}
                         inputProps={{ maxLength: 50 }} 
                         style={{paddingRight: '2%',float:'right'}}
                         InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
@@ -51,14 +72,14 @@ function PersonalDetails(props) {
                 <p className="label">תאריך לידה:</p>
                 <TextField  //value={props.date}
                             name="date"
-                            // error={props.dateValidation(props.date)}
-                            // helperText={props.dateValidation(props.date) ? "תאריך לידה לא חוקי" : ''}
+                            error={errors.date}
+                            helperText={errors.date? errors.date.message : ''}
                             style={{padding:'1%',float: 'right',marginTop:'1%',marginLeft:'3%'}} 
                             id="date" 
                             type="date" 
                             // onChange={(event) => props.handleChange(event)}
                             inputRef={register}/>
-                <div hidden={props.isYoungForBeer()}>
+                <div hidden={!props.isYoungForBeer()}>
                     <p className="label">בירה אהובה:</p>
                     <FormControl className="selectform">
                         <Select
@@ -81,8 +102,8 @@ function PersonalDetails(props) {
             <div className="field">
                 <TextField  //value={props.id}
                             name="id" 
-                            // error={props.idValidation(props.id)}
-                            // helperText={props.idValidation(props.id) ? "הכנס תז תקינה כולל ספרת ביקורת" : ''} 
+                            error={errors.id}
+                            helperText={errors.id? errors.id.message : ''} 
                             inputProps={{ maxLength: 9 }}
                             InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
                             id="id" 
@@ -93,8 +114,8 @@ function PersonalDetails(props) {
             <div className="field">
                 <TextField  name="phone" 
                             //value={props.phone}
-                            // error={props.phoneValidation(props.phone)}
-                            // helperText={props.phoneValidation(props.phone) ? "הכנס מספר פלאפון נייד תקין" : ''} 
+                            error={errors.phone}
+                            helperText={errors.phone? errors.phone.message : ''}  
                             InputLabelProps={{style:{direction:"rtl",left:"auto"}}}
                             inputProps={{ maxLength: 10 }} 
                             id="phone" 
