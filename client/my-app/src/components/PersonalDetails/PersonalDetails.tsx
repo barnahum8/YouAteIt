@@ -138,7 +138,7 @@ const PersonalDetails = (props) => {
                             label="טלפון"
                             inputRef={register} />
             </div>
-            <Button variant="contained" color="primary" style={{marginTop:'20%',width: '10%'}} 
+            <Button variant="contained" color="primary" style={{marginTop:'20%',width: '20%'}} 
                       type='submit'>שמור והמשך</Button>
         </form>
     </div>

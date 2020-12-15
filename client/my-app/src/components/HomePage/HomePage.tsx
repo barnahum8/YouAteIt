@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { GoogleLogin, GoogleLogout, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import { AppBar } from '@material-ui/core';
 import './HomePage.css';
 import FormComp from '../FormComp/FormComp';
@@ -15,11 +15,10 @@ const HomePage = (props) => {;
   const [userEmail, setUserEmail] = useState<string>('');
 
   // login to google account
-  const login =  (response:any) => {
-    console.log(response.xt);
-    if(response.xt && response.xt.du){
+  const login =  (response: GoogleLoginResponse | GoogleLoginResponseOffline ) => {
+    if ("profileObj" in response){
       setIsLogined(true);
-      setUserEmail(response.xt.du);
+      setUserEmail(response.profileObj.email)
     }
   }
 
