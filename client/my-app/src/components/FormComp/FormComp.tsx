@@ -1,81 +1,47 @@
-import React from 'react';
-import {Tabs,Tab, Box, Typography, Button} from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import {Tabs,Tab, Box, Typography} from '@material-ui/core';
 import './FormComp.css';
 import PersonalDetails from '../PersonalDetails/PersonalDetails';
 import FoodTypesCheckBox from '../FoodTypesCheckBox/FoodTypesCheckBox';
 import Swal from 'sweetalert2';
 
-interface MyProps {
-  userEmail: string
-}
-
-interface MyState {
-    value: number,
-    firstName: string,
-    lastName: string,
-    date: string,
-    beer: string,
-    id: string,
-    phone: string,
-    foodTypes: Array<{id:number,name:string}>,
-    checked: {},
-    newType: string
-}
-
-export class FormComp extends React.Component<MyProps,MyState> {
-  
-    constructor(props: MyProps) {
-        super(props);
-    
-        this.state = {
-            value: 0,
-            firstName: '',
-            lastName: '',
-            date: '',
-            beer: '',
-            id: '',
-            phone: '',
-            checked: {
-              1: false,
-              2: false,
-              3: false,
-              4: false,
-              5: false
-            },
-            foodTypes: [],
-            newType: ''
-        };
-    }
+const FormComp = (props) => {
+  const [value, setValue] = useState<number>(0);
+  const [foodTypes,setFoodTypes] = useState<Array<{id:number,name:string}>>([]);
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [date, setDate] = useState<string>('');
+  const [beer, setBeer] = useState<string>('');
+  const [id, setId] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [loaded,setLoaded] = useState<boolean>(false);
 
     // gets food types from the server 
     // https://youateitserver.azurewebsites.net/foodTypes
-    componentDidMount(){
-      fetch('http://localhost:4000/foodTypes')
+    useEffect(() => {
+      if(!loaded){
+        setLoaded(true);
+        fetch('http://localhost:4000/foodTypes')
         .then(response => response.json())
         .then(data => {
-          let checkedTemp = {};
-          for(let i=1;i<=data.length;i++){
-            checkedTemp[i] = false;
-          }
+          // let checkedTemp = {};
+          // for(let i=1;i<=data.length;i++){
+          //   checkedTemp[i] = false;
+          // }
 
-          this.setState({
-            ...this.state,
-            foodTypes: data,
-            checked: checkedTemp
-          });
+          setFoodTypes(data);
+          //setChecked(checkedTemp);
         });
-    }
+      }
+    },[loaded]);
 
     // changes tabs
-    handleTabChange = (event:any,newValue:number) => {
-        this.setState({
-            ...this.state,
-            value: newValue
-        });
+    const handleTabChange = (event:any,newValue:number) => {
+        setValue(newValue);
     };
 
     // the panel of each tab
-    TabPanel = (props) => {
+    const TabPanel = (props) => {
       const { children, value, index, ...other } = props;
     
       return (
@@ -96,53 +62,42 @@ export class FormComp extends React.Component<MyProps,MyState> {
       );
     }
 
-    // changes field based on the parameter
-    handleChange = (event:any) => {
-        const name = event.target.id;
-        this.setState({
-          ...this.state,
-          [name]: event.target.value,
-        });
-    };
-
     // checks if the user is young or old for beer option
-    isYoungForBeer = () => {
+    const isOldForBeer = (date) => {
       const birthDate = new Date().getTime() - 1000*60*60*24*365.2425*18
-      let isNotOver = true;
+      let isOldEnough = false;
       
-      if(new Date(this.state.date).getTime() < birthDate){
-          isNotOver = false;
+      if(new Date(date).getTime() < birthDate){
+        isOldEnough = true;
       }
 
-      return isNotOver;
+      return isOldEnough;
     }
 
     // validate first and last names
-    namesValidation = (name:string) => {
-      let isNotValid = false;
-      if(name.length !== 0 && !name.match(/^[a-z\A-Z\u0590-\u05fe]+$/)){
-          isNotValid = true;
+    const namesValidation = (name:string) => {
+      let isValid = true;
+      if(!name.match(/^[a-z\A-Z\u0590-\u05fe]+$/)) {
+        isValid = false;
       }
 
-      return isNotValid;
+      return isValid;
     }
 
     // validate birth date
-    dateValidation = (date:string) => {
-      let isNotValid = false;
+    const dateValidation = (date:string) => {
+      let isValid = true;
       if(new Date(date).getTime() > Date.now()){
-          isNotValid = true;
+        isValid = false;
       }
 
-      return isNotValid;
+      return isValid;
     }
 
     // validate id
-    idValidation = (id:any) =>{
-      let isNotValid = true;
-      if(id.length === 0){
-          isNotValid = false;
-      } else if(id.length === 9){
+    const idValidation = (id:any) =>{
+      let isValid = false;
+      if(id.length === 9){
           let digSum = 0;
           let SecondValue = 0;
           let firstValue = 0;
@@ -155,86 +110,45 @@ export class FormComp extends React.Component<MyProps,MyState> {
               }
           }
 
-          isNotValid = !(digSum%10 === 0)
+          isValid = (digSum%10 === 0)
       }
       
-      return isNotValid;
-    }
-
-    // validate phone number
-    phoneValidation = (phone:string) => {
-        let isNotValid = false;
-        if(phone.length !== 0 && 
-           (!phone.match(/^[0-9]*$/) || 
-           phone.charAt(0) !== '0' || 
-           phone.length !== 10)){
-            isNotValid = true;
-        }
-
-        return isNotValid;
-    }
-
-    // validate all personal details
-    validPersonalDetails = () => {
-      let isValid = false;
-
-      if(this.state.firstName.length === 0 ||
-         this.state.lastName.length === 0 ||
-         this.state.date.length === 0 ||
-         (!this.isYoungForBeer() && this.state.beer.length === 0) ||
-         this.state.id.length === 0 ||
-         this.state.phone.length === 0){
-            Swal.fire({
-              title: '!שגיאה',
-              text: '.אנא מלא את כל השדות כנדרש',
-              icon: 'error',
-              confirmButtonText: 'חזור'
-            })
-         } else if(this.namesValidation(this.state.firstName) ||
-                   this.namesValidation(this.state.firstName) ||
-                   this.dateValidation(this.state.date) ||
-                   this.idValidation(this.state.id) ||
-                   this.phoneValidation(this.state.phone)){
-                     Swal.fire({
-                      title: '!שגיאה',
-                      text: '.קיימת שגיאה באחד הנתונים, בדוק שהזנת הכל נכון',
-                      icon: 'error',
-                      confirmButtonText: 'חזור'
-                    })
-                   } else {
-                    isValid = true;
-                   }
       return isValid;
     }
 
-    changeToNextTab = () =>{
-      if(this.validPersonalDetails()){
-        this.setState({...this.state,value: 1})
-      }
+    // validate phone number
+    const phoneValidation = (phone:string) => {
+        let isValid = true;
+        if((!phone.match(/^[0-9]*$/) || 
+           phone.charAt(0) !== '0' || 
+           phone.length !== 10)){
+            isValid = false;
+        }
+
+        return isValid;
     }
 
-    // changes food types checkbox value
-    handleCheckboxChange = (event:any) => {
-      const id = event.target.id;
-      const newChecked = this.state.checked;
-      newChecked[id] = !newChecked[id];
-      this.setState({
-        ...this.state,
-        checked: newChecked,
-      });
-    };
+    const changeToNextTab = (data) =>{
+      setFirstName(data.firstName);
+      setLastName(data.lastName);
+      setDate(data.date);
+      setBeer(data.beer);
+      setId(data.id);
+      setPhone(data.phone);
+      setValue(1);
+    }
 
     // validate food types checkbox
-    validCheckbox = () => {
+    const validCheckbox = (checked) => {
       let isOneChecked = false;
       let isValid = false;
 
-      for(let index=0; index<this.state.foodTypes.length && !isOneChecked; index++){
-        isOneChecked = this.state.checked[this.state.foodTypes[index].id];
+      for(let index=0; index<foodTypes.length && !isOneChecked; index++){
+        isOneChecked = checked[foodTypes[index].id];
       }
 
-      if(isOneChecked || this.state.newType){
-        isValid = true
+      if(isOneChecked || (checked.newTypeCB && checked.newType)){
+        isValid = true;
       }
       else {
         Swal.fire({
@@ -248,29 +162,41 @@ export class FormComp extends React.Component<MyProps,MyState> {
       return isValid;
     }
 
+    const validPersonal = () => {
+      if(firstName && namesValidation(firstName) &&
+      lastName && namesValidation(lastName) &&
+      date && dateValidation(date) &&
+      (!isOldForBeer(date) || beer) &&
+      id && idValidation(id) &&
+      phone && phoneValidation(phone)){
+        return false;
+      }
+      return true;
+    }
+
     // submit all data to server
-    submitAll = () =>{
-      if(this.validPersonalDetails() && this.validCheckbox()){
+    const submitAll = (data) =>{
+      if(validCheckbox(data)){
         let foodTypesSelected : number[] = [];
-        for(let index=0; index<this.state.foodTypes.length; index++){
-          if(this.state.checked[this.state.foodTypes[index].id]){
-            foodTypesSelected.push(this.state.foodTypes[index].id);
+        for(let index=0; index<foodTypes.length; index++){
+          if(data[foodTypes[index].id]){
+            foodTypesSelected.push(foodTypes[index].id);
           }
         }
 
-        if(this.state.newType){
-          foodTypesSelected.push(this.state.foodTypes.length+1);
+        if(data.newType){
+          foodTypesSelected.push(foodTypes.length+1);
         }
 
         let fullData = {
-          "email":this.props.userEmail,
-          "firstname":this.state.firstName,
-          "lastname":this.state.lastName,
-          "birthdate":this.state.date,
-          "beer": this.state.beer,
-          "id": this.state.id,
-          "phone": this.state.phone,
-          "newType":this.state.newType,
+          "email": props.userEmail,
+          "firstname": firstName,
+          "lastname": lastName,
+          "birthdate": date,
+          "beer": beer,
+          "id": id,
+          "phone": phone,
+          "newType": data.newType,
           "foodTypes": foodTypesSelected
         };
 
@@ -284,7 +210,7 @@ export class FormComp extends React.Component<MyProps,MyState> {
         fetch('http://localhost:4000/users', requestOptions)
             .then(response => response)
             .then(data => {
-              if(data.status == 200){
+              if(data.status === 200){
                 Swal.fire({
                   title: '!מעולה',
                   text: '.הנתונים נשמרו בהצלחה',
@@ -300,49 +226,42 @@ export class FormComp extends React.Component<MyProps,MyState> {
                 })
               }
             });
-      }
+     }
     }
 
-    public render() {
-        return (
-            <div>
-                <div className="mainbar">
-                    <Tabs value={this.state.value} onChange={this.handleTabChange} aria-label="simple tabs example">
-                        <Tab label="פרטים אישיים" />
-                        <Tab label="מאכלים אהובים"/>
-                    </Tabs>
-                </div>
-                <this.TabPanel value={this.state.value} index={0}>
-                  <div>
-                    <PersonalDetails firstName = {this.state.firstName}
-                                    lastName = {this.state.lastName}
-                                    date = {this.state.date}
-                                    beer = {this.state.beer}
-                                    id = {this.state.id}
-                                    phone = {this.state.phone}
-                                    handleChange = {this.handleChange}
-                                    isYoungForBeer = {this.isYoungForBeer}
-                                    namesValidation = {this.namesValidation}
-                                    dateValidation = {this.dateValidation}
-                                    idValidation = {this.idValidation}
-                                    phoneValidation = {this.phoneValidation}></PersonalDetails>
-                  </div>
-                  <Button variant="contained" color="primary" style={{marginTop:'-20%',marginRight:'20%'}}
-                          onClick={this.changeToNextTab}>המשך</Button>
-                </this.TabPanel>
-                <this.TabPanel value={this.state.value} index={1}>
-                <div>
-                  <FoodTypesCheckBox foodTypes={this.state.foodTypes}
-                                checked={this.state.checked}
-                                newType={this.state.newType}
-                                handleCheckboxChange={this.handleCheckboxChange}
-                                handleNewTypeChange={this.handleChange}></FoodTypesCheckBox>
-                </div>
-                <Button variant="contained" color="primary" style={{marginTop:'-20%',marginRight:'20%'}} onClick={this.submitAll}>סיום</Button>
-                </this.TabPanel>
+    return (
+        <div>
+            <div className="mainbar">
+                <Tabs value={value} onChange={handleTabChange} aria-label="simple tabs example">
+                    <Tab label="פרטים אישיים" />
+                    <Tab disabled={validPersonal()} label="מאכלים אהובים"/>
+                </Tabs>
             </div>
-        );
-    }
+            <TabPanel value={value} index={0}>
+              <div>
+                <PersonalDetails 
+                                firstName = {firstName}
+                                lastName = {lastName}
+                                date = {date}
+                                beer = {beer}
+                                id = {id}
+                                phone = {phone}
+                                isOldForBeer = {isOldForBeer}
+                                namesValidation = {namesValidation}
+                                dateValidation = {dateValidation}
+                                idValidation = {idValidation}
+                                phoneValidation = {phoneValidation}
+                                changeToNextTab = {changeToNextTab}></PersonalDetails>
+              </div>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+            <div>
+              <FoodTypesCheckBox foodTypes={foodTypes}
+                            submitAll={submitAll}></FoodTypesCheckBox>
+            </div>
+            </TabPanel>
+        </div>
+    );
 }
 
 export default FormComp;

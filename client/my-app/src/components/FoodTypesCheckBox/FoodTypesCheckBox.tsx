@@ -1,9 +1,22 @@
 import React from 'react';
+import { useForm } from "react-hook-form";
 import {useState} from 'react';
-import { TextField, FormControl, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
+import { TextField, FormControl, FormGroup, FormControlLabel, Checkbox,Button } from '@material-ui/core';
 import './FoodTypesCheckBox.css';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
 
-function FoodTypesCheckBox(props) {
+const FoodTypesCheckBox = (props) => {
+    const schema = yup.object().shape({
+        newType: yup.string().when('newTypeCB', (newTypeCB, schema) => {
+            return newTypeCB === true ? schema.required('הוסף סוג חדש או בחר קיים') : schema.min(0);
+          }),
+      });
+      
+    const { register, handleSubmit, errors } = useForm({
+        mode: 'all',
+        resolver: yupResolver(schema)
+    });
     const [newTypeChecked, setNewTypeChecked] = useState<boolean>(false);
 
     return (
@@ -12,28 +25,32 @@ function FoodTypesCheckBox(props) {
             <FormGroup>
             {props.foodTypes?.map((eachType) => {
                 return(<FormControlLabel key={eachType.id.toString()}
-                    control={<Checkbox key={eachType.id.toString()} id={eachType.id.toString()} checked={props.checked[eachType.id.toString()]} 
-                                onChange={(event) =>props.handleCheckboxChange(event)}/>}
+                    control={<Checkbox name={eachType.id.toString()} inputRef={register} 
+                                key={eachType.id.toString()} id={eachType.id.toString()} />}
                     label={eachType.name}
                 />)
             })}
             <FormControlLabel key="newType"
-                control={<Checkbox key="newType" id="newType" checked={newTypeChecked} 
-                                   onChange={() => {setNewTypeChecked(!newTypeChecked);
-                                                    props.handleNewTypeChange({target:{id:"newType",value:''}});}} />}
+                control={<Checkbox name="newTypeCB" inputRef={register} key="newType" id="newType" checked={newTypeChecked} 
+                                   onChange={() => {setNewTypeChecked(!newTypeChecked);}}/>}
                 label="אחר"
             />
             </FormGroup>
             <div className="newtype" hidden={!newTypeChecked}>
-                <TextField  value={props.newType} 
+                <TextField  name="newType" 
+                            inputRef={register}
+                            error={errors.newType !== undefined}
+                            helperText={errors.newType? errors.newType.message : ''} 
                             className="names" 
                             style={{position:'absolute'}}
                             InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
                             id="newType" 
                             label="סוג אוכל חדש"
-                            onChange={(event) => props.handleNewTypeChange(event)}/>
+                            />
             </div>
         </FormControl>
+        <Button onClick={handleSubmit(props.submitAll)} style={{marginTop:'38%',marginLeft:'21%',display:'flex',width: '10%'}} 
+                            variant="contained" color="primary">סיום</Button>
     </div>
     )
 }
