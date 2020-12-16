@@ -46,12 +46,12 @@ const HomePage = (props) => {;
             <div className={styles.username} hidden={!isLogined}>
               <GoogleLogout
                 clientId={ CLIENT_ID }
-                buttonText='התנתק'
+                buttonText='logout'
                 onLogoutSuccess={ logout }
                 onFailure={ handleLogoutFailure }
               >
               </GoogleLogout>
-              <p className={styles.hello}>{userEmail} שלום</p>
+              <p className={styles.hello}>שלום {userEmail}</p>
           </div>
           </div>
         </AppBar>
