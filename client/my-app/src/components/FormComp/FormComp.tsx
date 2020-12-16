@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {Tabs,Tab, Box, Typography} from '@material-ui/core';
-import './FormComp.css';
 import PersonalDetails from '../PersonalDetails/PersonalDetails';
 import FoodTypesCheckBox from '../FoodTypesCheckBox/FoodTypesCheckBox';
 import Swal from 'sweetalert2';
+import useStyles from './FormCompStyle';
 
 const FormComp = (props) => {
+  const styles = useStyles();
+  
   const [value, setValue] = useState<number>(0);
   const [foodTypes,setFoodTypes] = useState<Array<{id:number,name:string}>>([]);
   const [firstName, setFirstName] = useState<string>('');
@@ -47,7 +49,7 @@ const FormComp = (props) => {
       return (
         <div
           role="tabpanel"
-          className="tabpanel"
+          className={styles.tabpanel}
           hidden={value !== index}
           id={`simple-tabpanel-${index}`}
           aria-labelledby={`simple-tab-${index}`}
@@ -231,7 +233,7 @@ const FormComp = (props) => {
 
     return (
         <div>
-            <div className="mainbar">
+            <div className={styles.mainbar}>
                 <Tabs value={value} onChange={handleTabChange} aria-label="simple tabs example">
                     <Tab label="פרטים אישיים" />
                     <Tab disabled={validPersonal()} label="מאכלים אהובים"/>

@@ -2,11 +2,12 @@ import React from 'react';
 import { useForm } from "react-hook-form";
 import {useState} from 'react';
 import { TextField, FormControl, FormGroup, FormControlLabel, Checkbox,Button } from '@material-ui/core';
-import './FoodTypesCheckBox.css';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import useStyles from './FoodTypesCheckBoxStyle';
 
 const FoodTypesCheckBox = (props) => {
+    const styles = useStyles();
     const schema = yup.object().shape({
         newType: yup.string().when('newTypeCB', (newTypeCB, schema) => {
             return newTypeCB === true ? schema.required('הוסף סוג חדש או בחר קיים') : schema.min(0);
@@ -20,7 +21,7 @@ const FoodTypesCheckBox = (props) => {
     const [newTypeChecked, setNewTypeChecked] = useState<boolean>(false);
 
     return (
-    <div dir="ltr" className="fullpage">
+    <div dir="ltr" className={styles.fullpage}>
          <FormControl style={{direction:'rtl',float: 'right'}} required component="fieldset" >
             <FormGroup>
             {props.foodTypes?.map((foodType) => {
@@ -36,7 +37,7 @@ const FoodTypesCheckBox = (props) => {
                 label="אחר"
             />
             </FormGroup>
-            <div className="newtype" hidden={!newTypeChecked}>
+            <div className={styles.newtype} hidden={!newTypeChecked}>
                 <TextField  name="newType" 
                             inputRef={register}
                             error={errors.newType !== undefined}
