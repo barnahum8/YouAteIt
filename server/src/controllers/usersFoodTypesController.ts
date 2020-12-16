@@ -1,7 +1,7 @@
 import pool from '../dbconfig/dbconnector';
 var format = require('pg-format');
 
-class usersFoodTypesController {
+class UsersFoodTypesController {
 
   // adds the user food types, deletes old types if exists
     public async addUsersFoodTypes(req, res) {
@@ -40,4 +40,4 @@ class usersFoodTypesController {
     }
 }
 
-export default usersFoodTypesController;
+export default UsersFoodTypesController;

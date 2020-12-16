@@ -1,8 +1,8 @@
 import express, { Router } from 'express';
-import beersController from '../controllers/beersController';
+import BeersController from '../controllers/BeersController';
 
 const router = Router();
-const beerController = new beersController();
+const beerController = new BeersController();
 
 router.get('/', beerController.get);
 

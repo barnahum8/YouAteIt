@@ -1,6 +1,6 @@
 import pool from '../dbconfig/dbconnector';
 
-class beersController {
+class BeersController {
 
     // gets all beer types from db
     public async get(req, res) {
@@ -20,4 +20,4 @@ class beersController {
     }
 }
 
-export default beersController;
+export default BeersController;

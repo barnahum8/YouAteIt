@@ -1,10 +1,10 @@
 import pool from '../dbconfig/dbconnector';
-import foodTypesController from './foodTypesController';
-import usersFoodTypesController from './usersFoodTypesController';
-const foodTypeController = new foodTypesController();
-const usersFoodTypeController = new usersFoodTypesController();
+import FoodTypesController from './FoodTypesController';
+import UsersFoodTypesController from './UsersFoodTypesController';
+const foodTypeController = new FoodTypesController();
+const usersFoodTypeController = new UsersFoodTypesController();
 
-class usersController {
+class UsersController {
 
   // adds new user to db, updates user detail if already exists
     public async addUser(req, res) {
@@ -42,4 +42,4 @@ class usersController {
     }
 }
 
-export default usersController;
+export default UsersController;

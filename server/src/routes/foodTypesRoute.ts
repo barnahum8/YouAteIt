@@ -1,8 +1,8 @@
 import express, { Router } from 'express';
-import foodTypesController from '../controllers/foodTypesController';
+import FoodTypesController from '../controllers/FoodTypesController';
 
 const router = Router();
-const foodTypeController = new foodTypesController();
+const foodTypeController = new FoodTypesController();
 
 router.get('/', foodTypeController.get);
 

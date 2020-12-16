@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {Tabs,Tab, Box, Typography} from '@material-ui/core';
-import './FormComp.css';
 import PersonalDetails from '../PersonalDetails/PersonalDetails';
 import FoodTypesCheckBox from '../FoodTypesCheckBox/FoodTypesCheckBox';
+import axios from 'axios';
 import Swal from 'sweetalert2';
+import useStyles from './FormCompStyle';
 
 const FormComp = (props) => {
+  const styles = useStyles();
+  
   const [value, setValue] = useState<number>(0);
   const [foodTypes,setFoodTypes] = useState<Array<{id:number,name:string}>>([]);
   const [firstName, setFirstName] = useState<string>('');
@@ -21,16 +24,9 @@ const FormComp = (props) => {
     useEffect(() => {
       if(!loaded){
         setLoaded(true);
-        fetch('http://localhost:4000/foodTypes')
-        .then(response => response.json())
-        .then(data => {
-          // let checkedTemp = {};
-          // for(let i=1;i<=data.length;i++){
-          //   checkedTemp[i] = false;
-          // }
-
-          setFoodTypes(data);
-          //setChecked(checkedTemp);
+        axios.get('http://localhost:4000/foodTypes')
+        .then(response => {
+          setFoodTypes(response.data);
         });
       }
     },[loaded]);
@@ -47,7 +43,7 @@ const FormComp = (props) => {
       return (
         <div
           role="tabpanel"
-          className="tabpanel"
+          className={styles.tabpanel}
           hidden={value !== index}
           id={`simple-tabpanel-${index}`}
           aria-labelledby={`simple-tab-${index}`}
@@ -87,7 +83,9 @@ const FormComp = (props) => {
     // validate birth date
     const dateValidation = (date:string) => {
       let isValid = true;
-      if(new Date(date).getTime() > Date.now()){
+      if(new Date(date).getTime() > Date.now() ||
+         new Date(date) < new Date('1/1/1900') ||
+         isNaN(new Date(date).getTime())){
         isValid = false;
       }
 
@@ -187,7 +185,7 @@ const FormComp = (props) => {
         if(data.newType){
           foodTypesSelected.push(foodTypes.length+1);
         }
-
+        
         let fullData = {
           "email": props.userEmail,
           "firstname": firstName,
@@ -200,17 +198,10 @@ const FormComp = (props) => {
           "foodTypes": foodTypesSelected
         };
 
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(fullData)
-        };
-
         // https://youateitserver.azurewebsites.net/users
-        fetch('http://localhost:4000/users', requestOptions)
-            .then(response => response)
-            .then(data => {
-              if(data.status === 200){
+        axios.post('http://localhost:4000/users', fullData)
+            .then(response => {
+              if(response.status === 200){
                 Swal.fire({
                   title: '!מעולה',
                   text: '.הנתונים נשמרו בהצלחה',
@@ -231,7 +222,7 @@ const FormComp = (props) => {
 
     return (
         <div>
-            <div className="mainbar">
+            <div className={styles.mainbar}>
                 <Tabs value={value} onChange={handleTabChange} aria-label="simple tabs example">
                     <Tab label="פרטים אישיים" />
                     <Tab disabled={validPersonal()} label="מאכלים אהובים"/>

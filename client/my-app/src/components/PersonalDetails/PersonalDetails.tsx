@@ -2,11 +2,13 @@ import React,{ useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import { useState } from 'react';
 import { TextField, FormControl, Select,Button } from '@material-ui/core';
-import './PersonalDetails.css';
+import axios from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import useStyles from './PersonalDetailsStyle';
 
 const PersonalDetails = (props) => {
+    const styles = useStyles();
 
     const schema = yup.object().shape({
         firstName: yup.string()
@@ -63,16 +65,15 @@ const PersonalDetails = (props) => {
     useEffect(() => {
         if(!loaded){
             setLoaded(true);
-            fetch('http://localhost:4000/beers')
-            .then(response => response.json())
-            .then(data => {
-                setBeers(data);
+            axios.get('http://localhost:4000/beers')
+            .then(response => {
+                setBeers(response.data);
             });
         }
     },[loaded]);
 
     return (
-    <div className="fullpage" dir="rtl">
+    <div className={styles.fullpage} dir="rtl">
         <form onSubmit={handleSubmit(props.changeToNextTab)} noValidate autoComplete="off">
             <TextField  name="firstName" 
                         error={errors.firstName !== undefined}
@@ -92,8 +93,8 @@ const PersonalDetails = (props) => {
                         id="lastName" 
                         label="שם משפחה"
                         inputRef={register} />
-            <div className="dateandbeer">
-                <p className="label">תאריך לידה:</p>
+            <div className={styles.dateandbeer}>
+                <p className={styles.label}>תאריך לידה:</p>
                 <TextField  name="date"
                             error={errors.date !== undefined}
                             helperText={errors.date? errors.date.message : ''}
@@ -102,8 +103,8 @@ const PersonalDetails = (props) => {
                             type="date" 
                             inputRef={register}/>
                 <div hidden={!props.isOldForBeer(dateValue)}>
-                    <p className="label">בירה אהובה:</p>
-                    <FormControl className="selectform">
+                    <p className={styles.label}>בירה אהובה:</p>
+                    <FormControl className={styles.selectform}>
                         <Select
                         name="beer"
                         id="beer"
@@ -118,7 +119,7 @@ const PersonalDetails = (props) => {
                     </FormControl>
                 </div>
             </div>
-            <div className="field">
+            <div className={styles.field}>
                 <TextField  name="id" 
                             error={errors.id !== undefined}
                             helperText={errors.id? errors.id.message : ''} 
@@ -128,7 +129,7 @@ const PersonalDetails = (props) => {
                             label='ת"ז'
                             inputRef={register} />
             </div>
-            <div className="field">
+            <div className={styles.field}>
                 <TextField  name="phone" 
                             error={errors.phone !== undefined}
                             helperText={errors.phone? errors.phone.message : ''}  
@@ -138,7 +139,7 @@ const PersonalDetails = (props) => {
                             label="טלפון"
                             inputRef={register} />
             </div>
-            <Button variant="contained" color="primary" style={{marginTop:'20%',width: '10%'}} 
+            <Button variant="contained" color="primary" style={{marginTop:'20%',width: '20%'}} 
                       type='submit'>שמור והמשך</Button>
         </form>
     </div>
