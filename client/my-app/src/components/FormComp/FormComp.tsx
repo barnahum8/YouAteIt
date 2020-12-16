@@ -185,7 +185,7 @@ const FormComp = (props) => {
         if(data.newType){
           foodTypesSelected.push(foodTypes.length+1);
         }
-
+        
         let fullData = {
           "email": props.userEmail,
           "firstname": firstName,
@@ -198,14 +198,8 @@ const FormComp = (props) => {
           "foodTypes": foodTypesSelected
         };
 
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(fullData)
-        };
-
         // https://youateitserver.azurewebsites.net/users
-        axios.post('http://localhost:4000/users', requestOptions)
+        axios.post('http://localhost:4000/users', fullData)
             .then(response => {
               if(response.status === 200){
                 Swal.fire({

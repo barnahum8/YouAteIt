@@ -1,6 +1,6 @@
 import pool from '../dbconfig/dbconnector';
 
-class foodTypesController {
+class FoodTypesController {
 
     // gets all food types from db
     public async get(req, res) {
@@ -41,4 +41,4 @@ class foodTypesController {
     }
 }
 
-export default foodTypesController;
+export default FoodTypesController;
