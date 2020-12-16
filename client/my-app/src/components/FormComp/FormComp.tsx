@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {Tabs,Tab, Box, Typography} from '@material-ui/core';
 import PersonalDetails from '../PersonalDetails/PersonalDetails';
 import FoodTypesCheckBox from '../FoodTypesCheckBox/FoodTypesCheckBox';
+import axios from 'axios';
 import Swal from 'sweetalert2';
 import useStyles from './FormCompStyle';
 
@@ -23,16 +24,9 @@ const FormComp = (props) => {
     useEffect(() => {
       if(!loaded){
         setLoaded(true);
-        fetch('http://localhost:4000/foodTypes')
-        .then(response => response.json())
-        .then(data => {
-          // let checkedTemp = {};
-          // for(let i=1;i<=data.length;i++){
-          //   checkedTemp[i] = false;
-          // }
-
-          setFoodTypes(data);
-          //setChecked(checkedTemp);
+        axios.get('http://localhost:4000/foodTypes')
+        .then(response => {
+          setFoodTypes(response.data);
         });
       }
     },[loaded]);
@@ -89,7 +83,9 @@ const FormComp = (props) => {
     // validate birth date
     const dateValidation = (date:string) => {
       let isValid = true;
-      if(new Date(date).getTime() > Date.now()){
+      if(new Date(date).getTime() > Date.now() ||
+         new Date(date) < new Date('1/1/1900') ||
+         isNaN(new Date(date).getTime())){
         isValid = false;
       }
 
@@ -209,10 +205,9 @@ const FormComp = (props) => {
         };
 
         // https://youateitserver.azurewebsites.net/users
-        fetch('http://localhost:4000/users', requestOptions)
-            .then(response => response)
-            .then(data => {
-              if(data.status === 200){
+        axios.post('http://localhost:4000/users', requestOptions)
+            .then(response => {
+              if(response.status === 200){
                 Swal.fire({
                   title: '!מעולה',
                   text: '.הנתונים נשמרו בהצלחה',

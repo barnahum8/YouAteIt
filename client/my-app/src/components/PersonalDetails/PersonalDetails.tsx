@@ -2,6 +2,7 @@ import React,{ useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import { useState } from 'react';
 import { TextField, FormControl, Select,Button } from '@material-ui/core';
+import axios from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import useStyles from './PersonalDetailsStyle';
@@ -64,10 +65,9 @@ const PersonalDetails = (props) => {
     useEffect(() => {
         if(!loaded){
             setLoaded(true);
-            fetch('http://localhost:4000/beers')
-            .then(response => response.json())
-            .then(data => {
-                setBeers(data);
+            axios.get('http://localhost:4000/beers')
+            .then(response => {
+                setBeers(response.data);
             });
         }
     },[loaded]);
