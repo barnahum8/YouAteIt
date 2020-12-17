@@ -65,7 +65,7 @@ const PersonalDetails = (props) => {
     useEffect(() => {
         if(!loaded){
             setLoaded(true);
-            axios.get('http://localhost:4000/beers')
+            axios.get(process.env.REACT_APP_LOCAL + '/beers')
             .then(response => {
                 setBeers(response.data);
             });
