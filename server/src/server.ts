@@ -25,7 +25,7 @@ class Server {
         //this.dbConnect();
 
         this.app.use(postgraphile(
-            process.env.CONNECTION_STRING,
+            process.env.LOCAL_CON,
             "public", 
             {
                 watchPg: true,
