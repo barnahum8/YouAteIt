@@ -42,13 +42,30 @@ class usersController {
               }
         }`;
 
+        const deleteUserQuery = gql`
+          mutation deleteUserByEmail ($email: String!) {
+              deleteUserByEmail(
+                  input: { 
+                      email: $email 
+                  }
+              ) {
+                  user {
+                      email
+                  }
+              }
+          }`;
+
         try {
+            // await request(String(process.env.GRAPHQL), deleteUserQuery,{
+            //   email: req.body.email,
+            // });
+
             const user = await request(String(process.env.GRAPHQL), createUserQuery,{
               email: req.body.email,
               firstname: req.body.firstname,
               lastname: req.body.lastname,
               birthdate: req.body.birthdate,
-              beer: req.body.beer ? req.body.beer : null,
+              beer: req.body.beer ? parseInt(req.body.beer) : null,
               id: req.body.id,
               phone: req.body.phone
             });
