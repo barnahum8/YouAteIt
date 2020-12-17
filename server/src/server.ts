@@ -4,11 +4,14 @@ import foodTypesRoute from './routes/foodTypesRoute';
 import beersRoute from './routes/beersRoute';
 import usersRoute from './routes/usersRoute';
 import pool from './dbconfig/dbconnector';
+import {postgraphile} from "postgraphile";
 
 class Server {
     private app;
 
     constructor() {
+        require('dotenv').config();
+
         this.app = express();
 
         this.app.use((req, res, next) => {
@@ -19,7 +22,17 @@ class Server {
 
         this.config();
         this.routerConfig();
-        this.dbConnect();
+        //this.dbConnect();
+
+        this.app.use(postgraphile(
+            process.env.CONNECTION_STRING,
+            "public", 
+            {
+                watchPg: true,
+                graphiql: true,
+                enhanceGraphiql: true,
+            }
+        ));
     }
 
     private config() {
@@ -29,7 +42,7 @@ class Server {
 
     private dbConnect() {
         pool.connect( (err, client, done) => {
-            if (err) throw new Error(err);
+            if (err) throw new Error();
             console.log('Connected');
           }); 
     }
