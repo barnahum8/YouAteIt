@@ -65,7 +65,7 @@ const PersonalDetails = (props) => {
     useEffect(() => {
         if(!loaded){
             setLoaded(true);
-            axios.get(process.env.REACT_APP_LOCAL + '/beers')
+            axios.get(process.env.REACT_APP_LOCALHOST + '/beers')
             .then(response => {
                 setBeers(response.data);
             });

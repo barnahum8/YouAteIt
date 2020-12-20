@@ -41,8 +41,7 @@ class FoodTypesController {
             }
         }`;
         try {
-            const foodTypes = await request(String(process.env.GRAPHQL), createFoodTypesQuery,req.body.newType)
-            res.send(foodTypes);
+            await request(String(process.env.GRAPHQL), createFoodTypesQuery,{foodTypeName:req.body.newType})
         } catch (error) {
             res.status(400).send(error);
         }

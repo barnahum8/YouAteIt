@@ -10,73 +10,48 @@ class usersController {
   // adds new user to db, updates user detail if already exists
     public async addUser(req, res) {
       const createUserQuery = gql`
-      mutation createUser ($email: String!
+      mutation createOrUpdateUser ($email: String!
         $firstname: String!
         $lastname: String!
         $birthdate: String!
         $beer: Int
         $id: String!
-        $phone: String!) {
-                createUser(
-                  input: { 
-                    user: { 
-                      email: $email
-                      firstname:$firstname
-                      lastname:$lastname
-                      birthdate:$birthdate
-                      beer:$beer
-                      id:$id
-                        phone:$phone 
-                    } 
-                  }
-                ) {
-                user {
-                  email
-                  firstname
-                  lastname
-                  birthdate
-                  beer
-                  id
-                  phone
-                }
-              }
-        }`;
+        $phone: String!){
+        createorupdateuser(
+          input: {
+              useremail: $email
+              userfirstname: $firstname
+              userlastname: $lastname
+              userbirthdate: $birthdate
+              userbeer: $beer
+              userid:$id
+              userphone:$phone
+          }){
+            user{
+              email
+            }
+          }
+      }`
 
-        const deleteUserQuery = gql`
-          mutation deleteUserByEmail ($email: String!) {
-              deleteUserByEmail(
-                  input: { 
-                      email: $email 
-                  }
-              ) {
-                  user {
-                      email
-                  }
-              }
-          }`;
-
-        try {
-            // await request(String(process.env.GRAPHQL), deleteUserQuery,{
-            //   email: req.body.email,
-            // });
-
-            const user = await request(String(process.env.GRAPHQL), createUserQuery,{
-              email: req.body.email,
-              firstname: req.body.firstname,
-              lastname: req.body.lastname,
-              birthdate: req.body.birthdate,
-              beer: req.body.beer ? parseInt(req.body.beer) : null,
-              id: req.body.id,
-              phone: req.body.phone
-            });
-
+      try {
+          const user = await request(String(process.env.GRAPHQL), createUserQuery,{
+            email: req.body.email,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            birthdate: req.body.birthdate,
+            beer: req.body.beer ? parseInt(req.body.beer) : null,
+            id: req.body.id,
+            phone: req.body.phone
+          }).then(()=>{
             if(req.body.newType){
               foodTypeController.addType(req,res);
             }
-
-            usersFoodTypeController.addUsersFoodTypes(req,res);
-
-            res.send(user);
+  
+            usersFoodTypeController.addUsersFoodTypes(req,res).then(() => {
+              res.send(user);
+            });
+          });
+          
         } catch (error) {
             res.status(400).send(error);
         }
