@@ -42,7 +42,7 @@ class Server {
 
     private dbConnect() {
         pool.connect( (err, client, done) => {
-            if (err) throw new Error();
+            if (err) throw new Error(err.message);
             console.log('Connected');
           }); 
     }

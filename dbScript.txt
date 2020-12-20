@@ -26,11 +26,11 @@ CREATE TABLE users (
 
 
 CREATE TABLE usersFoodTypes (
-	code serial PRIMARY KEY,
 	email VARCHAR ( 50 ) FOREIGN KEY REFERENCES users(email),
 	id INT NOT NULL,
 	FOREIGN KEY (id)
       		REFERENCES foodTypes(id)
+	PRIMARY KEY(email,id)
 );
 
 INSERT INTO foodTypes (name)
