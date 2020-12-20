@@ -61,7 +61,6 @@ const PersonalDetails = (props) => {
     const dateValue = watch('date');
 
     // gets beer types from server
-    // https://youateitserver.azurewebsites.net/beers
     useEffect(() => {
         if(!loaded){
             setLoaded(true);
