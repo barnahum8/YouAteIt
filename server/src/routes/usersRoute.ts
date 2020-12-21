@@ -1,8 +1,8 @@
 import express, { Router } from 'express';
-import usersController from '../controllers/usersController';
+import UsersController from '../controllers/UsersController';
 
 const router = Router();
-const userController = new usersController();
+const userController = new UsersController();
 
 router.post('/', userController.addUser);
 

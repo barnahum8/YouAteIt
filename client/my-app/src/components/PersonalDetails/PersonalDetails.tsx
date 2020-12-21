@@ -1,122 +1,160 @@
-import React from 'react';
-import { TextField, FormControl, Select } from '@material-ui/core';
-import './PersonalDetails.css';
+import React,{ useEffect } from 'react';
+import { useForm } from "react-hook-form";
+import { useState } from 'react';
+import { TextField, FormControl, Select,Button } from '@material-ui/core';
+import axios from 'axios';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+import useStyles from './PersonalDetailsStyle';
 
-interface MyProps {
-    firstName: string,
-    lastName: string,
-    date: string,
-    beer: string,
-    id: string,
-    phone: string,
-    handleChange: Function,
-    isYoungForBeer: Function,
-    namesValidation: Function,
-    dateValidation: Function,
-    idValidation: Function,
-    phoneValidation: Function
-}
+const PersonalDetails = (props) => {
+    const styles = useStyles();
 
-interface MyState {
-    beers: Array<{id:number,name:string}>
-}
+    const schema = yup.object().shape({
+        firstName: yup.string()
+                    .max(50,'ניתן להזין עד 50 תווים')
+                    .required('אנא מלא שדה זה.')
+                    .test('firstName','הכנס שם בעברית או באנגלית בלבד',(value)=>{
+                        return props.namesValidation(value);
+                    }),
+        lastName: yup.string()
+                    .max(50,'ניתן להזין עד 50 תווים')
+                    .required('אנא מלא שדה זה.')
+                    .test('lastName','הכנס שם בעברית או באנגלית בלבד',(value)=>{
+                        return props.namesValidation(value);
+                    }),
+        date: yup.string()
+                    .required('אנא מלא שדה זה.')
+                    .test('date','תאריך לידה לא חוקי',(value)=>{
+                        return props.dateValidation(value);
+                    }),
+        beer: yup.string().when('date', (date, schema) => {
+            return props.isOldForBeer(date) ? schema.required('אנא מלא שדה זה.') : schema.min(0);
+          }),
+        id: yup.string()
+                    .required('אנא מלא שדה זה.')
+                    .test('id','הכנס תז תקינה כולל ספרת ביקורת',(value)=>{
+                        return props.idValidation(value);
+                    }),
+        phone: yup.string()
+                    .required('אנא מלא שדה זה.')
+                    .test('phone','הכנס מספר פלאפון נייד תקין',(value)=>{
+                        return props.phoneValidation(value);
+                    }),
+      });
 
-class PersonalDetails extends React.Component<MyProps,MyState> {
-    constructor(props: MyProps) {
-        super(props);
-    
-        this.state = {
-          beers:[]
-        };
-    }
+    const [beers, setBeers] = useState<Array<{id:number,name:string}>>([]);
+    const [loaded,setLoaded] = useState<boolean>(false);
+
+    const { register, handleSubmit, errors, watch,reset } = useForm({
+        mode: 'all',
+        defaultValues:{
+            firstName: props.firstName,
+            lastName: props.lastName,
+            date: props.date,
+            beer: props.beer,
+            id: props.id,
+            phone: props.phone,
+        },
+        resolver: yupResolver(schema)
+    });
+    const dateValue = watch('date');
 
     // gets beer types from server
-    componentDidMount(){
-        if(this.state.beers.length === 0){
-            fetch('https://youateitserver.azurewebsites.net/beers')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({
-                    ...this.state,
-                    beers: data,
-                });
+    useEffect(() => {
+        if(!loaded && beers.length === 0){
+            setLoaded(true);
+            axios.get(process.env.REACT_APP_LOCALHOST + '/beers')
+            .then(response => {
+                setBeers(response.data);
+                const fetchData = async () => {
+                    // This would be a GET call to an endpoint
+                    reset({
+                        firstName: props.firstName,
+                        lastName: props.lastName,
+                        date: props.date,
+                        beer: props.beer,
+                        id: props.id,
+                        phone: props.phone,
+                    });
+                };
+                fetchData();
             });
-        }   
-    }
+        }
+    },[loaded,reset]);
 
-    render() {
-        return (
-        <div className="fullpage" dir="rtl">
-            <form noValidate autoComplete="off">
-                <TextField  value={this.props.firstName}
-                            error={this.props.namesValidation(this.props.firstName)}
-                            helperText={this.props.namesValidation(this.props.firstName) ? "הכנס שם בעברית או באנגלית בלבד" : ''} 
-                            inputProps={{ maxLength: 50 }}
-                            style={{paddingLeft: '2%',float:'right'}}
+    return (
+    <div className={styles.fullpage} dir="rtl">
+        <form onSubmit={handleSubmit(props.changeToNextTab)} noValidate autoComplete="off">
+            <TextField  name="firstName" 
+                        error={errors.firstName !== undefined}
+                        helperText={errors.firstName? errors.firstName.message : ''} 
+                        inputProps={{ maxLength: 50 }}
+                        style={{paddingLeft: '2%',float:'right'}}
+                        InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
+                        id="firstName" 
+                        label="שם פרטי"
+                        inputRef={register} />
+            <TextField  name="lastName"
+                        error={errors.lastName !== undefined}
+                        helperText={errors.lastName? errors.lastName.message : ''}
+                        inputProps={{ maxLength: 50 }} 
+                        style={{paddingRight: '2%',float:'right'}}
+                        InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
+                        id="lastName" 
+                        label="שם משפחה"
+                        inputRef={register} />
+            <div className={styles.dateandbeer}>
+                <p className={styles.label}>תאריך לידה:</p>
+                <TextField  name="date"
+                            error={errors.date !== undefined}
+                            helperText={errors.date? errors.date.message : ''}
+                            style={{padding:'1%',float: 'right',marginTop:'1%',marginLeft:'3%'}} 
+                            id="date" 
+                            type="date" 
+                            inputRef={register}/>
+                <div hidden={!props.isOldForBeer(dateValue)}>
+                    <p className={styles.label}>בירה אהובה:</p>
+                    <FormControl className={styles.selectform}>
+                        <Select
+                        name="beer"
+                        id="beer"
+                        style={{padding:'2%', marginTop:'10%'}} 
+                        native
+                        inputRef={register}>
+                        <option key="none" aria-label="None" value="" />
+                        {beers?.map((eachBeer) => {
+                            return(<option key={eachBeer.id} value={eachBeer.id}>{eachBeer.name}</option>)
+                        })}
+                        </Select>
+                    </FormControl>
+                </div>
+            </div>
+            <div className={styles.field}>
+                <TextField  name="id" 
+                            error={errors.id !== undefined}
+                            helperText={errors.id? errors.id.message : ''} 
+                            inputProps={{ maxLength: 9 }}
                             InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
-                            id="firstName" 
-                            label="שם פרטי"
-                            onChange={(event) => this.props.handleChange(event)} />
-                <TextField  value={this.props.lastName}
-                            error={this.props.namesValidation(this.props.lastName)}
-                            helperText={this.props.namesValidation(this.props.lastName) ? "הכנס שם בעברית או באנגלית בלבד" : ''}
-                            inputProps={{ maxLength: 50 }} 
-                            style={{paddingRight: '2%',float:'right'}}
-                            InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
-                            id="lastName" 
-                            label="שם משפחה"
-                            onChange={(event) => this.props.handleChange(event)} />
-                <div className="dateandbeer">
-                    <p className="label">תאריך לידה:</p>
-                    <TextField  value={this.props.date}
-                                error={this.props.dateValidation(this.props.date)}
-                                helperText={this.props.dateValidation(this.props.date) ? "תאריך לידה לא חוקי" : ''}
-                                style={{padding:'1%',float: 'right',marginTop:'1%',marginLeft:'3%'}} 
-                                id="date" 
-                                type="date" 
-                                onChange={(event) => this.props.handleChange(event)}/>
-                    <div hidden={this.props.isYoungForBeer()}>
-                        <p className="label">בירה אהובה:</p>
-                        <FormControl className="selectform">
-                            <Select
-                            id="beer"
-                            style={{padding:'2%', marginTop:'10%'}} 
-                            native
-                            value={this.props.beer}
-                            onChange={(event) => this.props.handleChange(event)}
-                            >
-                            <option key="none" aria-label="None" value="" />
-                            {this.state.beers?.map((eachBeer) => {
-                                return(<option key={eachBeer.id} value={eachBeer.id}>{eachBeer.name}</option>)
-                            })}
-                            </Select>
-                        </FormControl>
-                    </div>
-                </div>
-                <div className="field">
-                    <TextField  value={this.props.id}
-                                error={this.props.idValidation(this.props.id)}
-                                helperText={this.props.idValidation(this.props.id) ? "הכנס תז תקינה כולל ספרת ביקורת" : ''} 
-                                inputProps={{ maxLength: 9 }}
-                                InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
-                                id="id" 
-                                label='ת"ז'
-                                onChange={(event) => this.props.handleChange(event)} />
-                </div>
-                <div className="field">
-                    <TextField  value={this.props.phone}
-                                error={this.props.phoneValidation(this.props.phone)}
-                                helperText={this.props.phoneValidation(this.props.phone) ? "הכנס מספר פלאפון נייד תקין" : ''} 
-                                InputLabelProps={{style:{direction:"rtl",left:"auto"}}}
-                                inputProps={{ maxLength: 10 }} 
-                                id="phone" 
-                                label="טלפון"
-                                onChange={(event) => this.props.handleChange(event)} />
-                </div>
-            </form>
-        </div>
-        )
-    }
+                            id="id" 
+                            label='ת"ז'
+                            inputRef={register} />
+            </div>
+            <div className={styles.field}>
+                <TextField  name="phone" 
+                            error={errors.phone !== undefined}
+                            helperText={errors.phone? errors.phone.message : ''}  
+                            InputLabelProps={{style:{direction:"rtl",left:"auto"}}}
+                            inputProps={{ maxLength: 10 }} 
+                            id="phone" 
+                            label="טלפון"
+                            inputRef={register} />
+            </div>
+            <Button variant="contained" color="primary" style={{marginTop:'20%',width: '20%'}} 
+                      type='submit'>שמור והמשך</Button>
+        </form>
+    </div>
+    )
 }
 
 export default PersonalDetails;

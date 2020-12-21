@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 
 const pool = new Pool ({
     max: 20,
-    connectionString: 'postgres://mseafcnw:4FJXc6cPat7rARyDiJ6-jxebqOmsIzE9@hattie.db.elephantsql.com:5432/mseafcnw',
+    connectionString: process.env.CONNECTION_STRING,
     idleTimeoutMillis: 30000
 });
 

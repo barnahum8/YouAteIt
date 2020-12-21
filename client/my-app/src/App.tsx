@@ -1,10 +1,12 @@
 import React from 'react';
-import './App.css';
 import HomePage from './components/HomePage/HomePage';
+import useStyles from './AppStyle';
 
-function App() {
+const App = () => {
+  const styles = useStyles();
+
   return (
-    <div className="App">
+    <div className={styles.App}>
       <HomePage></HomePage>
     </div>
   );

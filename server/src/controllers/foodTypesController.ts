@@ -1,19 +1,23 @@
 import pool from '../dbconfig/dbconnector';
+import { gql, request } from "graphql-request";
 
-class foodTypesController {
+
+class FoodTypesController {
 
     // gets all food types from db
     public async get(req, res) {
+        const getFoodTypesQuery = gql`
+        query getFoodTypes {
+            allFoodtypes {
+                nodes {
+                  id
+                  name
+                }
+            }
+        }`;
         try {
-            const client = await pool.connect();
-
-            const sql = "SELECT * FROM foodTypes";
-            const { rows } = await client.query(sql);
-            const foodTypes = rows;
-
-            client.release();
-
-            res.send(foodTypes);
+            const foodTypes = await request(String(process.env.GRAPHQL), getFoodTypesQuery)
+            res.send(foodTypes.allFoodtypes.nodes);
         } catch (error) {
             res.status(400).send(error);
         }
@@ -21,24 +25,27 @@ class foodTypesController {
 
     // adds new type to the db
     public async addType(req,res){
-        try {
-            const client = await pool.connect();
-
-            const sql = 'INSERT INTO foodTypes (name) VALUES($1) RETURNING *';
-            const values = [req.body.newType];
-
-            await client.query(sql,values,(err, res) => {
-                if (err) {
-                  console.log(err.stack)
+        const createFoodTypesQuery = gql`
+        mutation createFoodType ($foodTypeName: String!) {
+            createFoodtype(
+                input: { 
+                    foodtype: { 
+                        name: $foodTypeName 
+                    } 
                 }
-              })
-
-            client.release();
-
+            ) {
+                foodtype {
+                    name
+                    id
+                }
+            }
+        }`;
+        try {
+            await request(String(process.env.GRAPHQL), createFoodTypesQuery,{foodTypeName:req.body.newType})
         } catch (error) {
             res.status(400).send(error);
         }
     }
 }
 
-export default foodTypesController;
+export default FoodTypesController;

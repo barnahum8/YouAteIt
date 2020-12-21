@@ -4,14 +4,17 @@ import foodTypesRoute from './routes/foodTypesRoute';
 import beersRoute from './routes/beersRoute';
 import usersRoute from './routes/usersRoute';
 import pool from './dbconfig/dbconnector';
+import {postgraphile} from "postgraphile";
 
 class Server {
     private app;
 
     constructor() {
+        require('dotenv').config();
+
         this.app = express();
 
-        this.app.use(function(req, res, next) {
+        this.app.use((req, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
@@ -19,7 +22,17 @@ class Server {
 
         this.config();
         this.routerConfig();
-        this.dbConnect();
+        //this.dbConnect();
+
+        this.app.use(postgraphile(
+            process.env.LOCAL_CON,
+            "public", 
+            {
+                watchPg: true,
+                graphiql: true,
+                enhanceGraphiql: true,
+            }
+        ));
     }
 
     private config() {
@@ -28,8 +41,8 @@ class Server {
     }
 
     private dbConnect() {
-        pool.connect(function (err, client, done) {
-            if (err) throw new Error(err);
+        pool.connect( (err, client, done) => {
+            if (err) throw new Error(err.message);
             console.log('Connected');
           }); 
     }
