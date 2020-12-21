@@ -44,13 +44,15 @@ const HomePage = (props) => {;
             <h2 className={styles.title}>אכלת אותה</h2>
             <img alt="logo" className={styles.logo} src="logo.png" width='80' height="60"></img>
             <div className={styles.username} hidden={!isLogined}>
-              <GoogleLogout
+              <div className={styles.logoutbtn}>
+                <GoogleLogout
                 clientId={ CLIENT_ID }
                 buttonText='logout'
                 onLogoutSuccess={ logout }
                 onFailure={ handleLogoutFailure }
               >
               </GoogleLogout>
+              </div>
               <p className={styles.hello}>שלום {userEmail}</p>
           </div>
           </div>
