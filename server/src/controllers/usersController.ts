@@ -1,45 +1,61 @@
 import pool from '../dbconfig/dbconnector';
 import FoodTypesController from './FoodTypesController';
-import UsersFoodTypesController from './UsersFoodTypesController';
+import usersFoodTypesController from './usersFoodTypesController';
 const foodTypeController = new FoodTypesController();
-const usersFoodTypeController = new UsersFoodTypesController();
+const usersFoodTypeController = new usersFoodTypesController();
+import { gql, request } from "graphql-request";
 
-class UsersController {
+class usersController {
 
   // adds new user to db, updates user detail if already exists
     public async addUser(req, res) {
-        try {
-            const client = await pool.connect();
+      const createUserQuery = gql`
+      mutation createOrUpdateUser ($email: String!
+        $firstname: String!
+        $lastname: String!
+        $birthdate: String!
+        $beer: Int
+        $id: String!
+        $phone: String!){
+        createorupdateuser(
+          input: {
+              useremail: $email
+              userfirstname: $firstname
+              userlastname: $lastname
+              userbirthdate: $birthdate
+              userbeer: $beer
+              userid:$id
+              userphone:$phone
+          }){
+            user{
+              email
+            }
+          }
+      }`
 
-            const sql = 'INSERT INTO users (email,firstname,lastname,birthdate,beer,id,phone) VALUES($1, $2, $3, $4, $5, $6, $7)' + 
-                        'ON CONFLICT (email) DO UPDATE SET firstname = $2 ,lastname = $3 ,birthdate = $4 ,beer = $5 ,id = $6 ,phone = $7 ';
-            const values = [req.body.email,
-                            req.body.firstname,
-                            req.body.lastname,
-                            req.body.birthdate,
-                            req.body.beer ? req.body.beer : null,
-                            req.body.id,
-                            req.body.phone];
-
-            await client.query(sql,values,(err, res) => {
-                if (err) {
-                  console.log(err.stack)
-                } else {
-                  if(req.body.newType){
-                    foodTypeController.addType(req,res);
-                  }
-                  usersFoodTypeController.addUsersFoodTypes(req,res);
-
-                }
-              })
-
-            client.release();
-
-            res.send();
+      try {
+          const user = await request(String(process.env.GRAPHQL), createUserQuery,{
+            email: req.body.email,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            birthdate: req.body.birthdate,
+            beer: req.body.beer ? parseInt(req.body.beer) : null,
+            id: req.body.id,
+            phone: req.body.phone
+          }).then(()=>{
+            if(req.body.newType){
+              foodTypeController.addType(req,res);
+            }
+  
+            usersFoodTypeController.addUsersFoodTypes(req,res).then(() => {
+              res.send(user);
+            });
+          });
+          
         } catch (error) {
             res.status(400).send(error);
         }
     }
 }
 
-export default UsersController;
+export default usersController;

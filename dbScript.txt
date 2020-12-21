@@ -1,8 +1,8 @@
 
-DROP TABLE IF EXISTS foodTypes;
-DROP TABLE IF EXISTS beers;
-DROP TABLE IF EXISTS users ;
-DROP TABLE IF EXISTS usersFoodTypes;
+DROP TABLE IF EXISTS foodTypes CASCADE;
+DROP TABLE IF EXISTS beers CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS usersFoodTypes CASCADE;
 
 CREATE TABLE foodTypes (
 	id serial PRIMARY KEY,
@@ -19,18 +19,22 @@ CREATE TABLE users (
 	firstname VARCHAR ( 50 ) NOT NULL,
 	lastname VARCHAR ( 50 ) NOT NULL,
 	birthdate VARCHAR ( 50 ) NOT NULL,
-	beer INT FOREIGN KEY REFERENCES beers(id),
+	beer INT,
 	id VARCHAR ( 50 ) NOT NULL,
-	phone VARCHAR ( 50 ) NOT NULL
+	phone VARCHAR ( 50 ) NOT NULL,
+	FOREIGN KEY (beer)
+		REFERENCES beers(id)
 );
 
 
 CREATE TABLE usersFoodTypes (
-	code serial PRIMARY KEY,
-	email VARCHAR ( 50 ) FOREIGN KEY REFERENCES users(email),
+	email VARCHAR ( 50 ),
 	id INT NOT NULL,
+ 	FOREIGN KEY (email)
+		REFERENCES users(email),
 	FOREIGN KEY (id)
-      		REFERENCES foodTypes(id)
+      		REFERENCES foodTypes(id),
+	PRIMARY KEY(email,id)
 );
 
 INSERT INTO foodTypes (name)
@@ -46,3 +50,21 @@ VALUES('קורונה'),
 ('הייניקן'),
 ('סול'),
 ('קרלסברג');
+
+CREATE FUNCTION public.deleteUsersfoodtypeByEmail(email varchar)
+RETURNS public.usersFoodTypes
+AS $$
+  DELETE FROM usersFoodTypes 
+  WHERE usersFoodTypes.email = deleteUsersfoodtypeByEmail.email
+  RETURNING *;
+$$ LANGUAGE sql VOLATILE STRICT
+
+CREATE FUNCTION public.createOrUpdateUser(useremail varchar,userfirstname varchar,userlastname varchar, 
+										  userbirthdate varchar,userbeer integer,userid varchar,userphone varchar)
+RETURNS public.users
+AS $$
+  INSERT INTO users (email,firstname,lastname,birthdate,beer,id,phone) 
+  VALUES(createOrUpdateUser.useremail, createOrUpdateUser.userfirstname, createOrUpdateUser.userlastname, createOrUpdateUser.userbirthdate, createOrUpdateUser.userbeer, createOrUpdateUser.userid, createOrUpdateUser.userphone)
+  ON CONFLICT (email) DO UPDATE SET firstname = createOrUpdateUser.userfirstname ,lastname = createOrUpdateUser.userlastname ,birthdate = createOrUpdateUser.userbirthdate ,beer = createOrUpdateUser.userbeer ,id = createOrUpdateUser.userid ,phone = createOrUpdateUser.userphone 
+  RETURNING *;
+$$ LANGUAGE sql VOLATILE

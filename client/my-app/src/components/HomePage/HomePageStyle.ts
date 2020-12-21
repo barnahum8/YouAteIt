@@ -18,11 +18,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     },    
     comp: {
         marginTop: '15%',
+        direction: "ltr"
     },    
     logo: {
         float: 'right',
         marginRight: '2%',
         marginTop: '1%',
+    },
+    logoutbtn: {
+        direction: "ltr",
+        float: "left",
+        marginLeft: "30%",
     },
 }));
 
