@@ -46,7 +46,7 @@ const PersonalDetails = (props) => {
     const [beers, setBeers] = useState<Array<{id:number,name:string}>>([]);
     const [loaded,setLoaded] = useState<boolean>(false);
 
-    const { register, handleSubmit, errors, watch } = useForm({
+    const { register, handleSubmit, errors, watch,reset } = useForm({
         mode: 'all',
         defaultValues:{
             firstName: props.firstName,
@@ -62,14 +62,26 @@ const PersonalDetails = (props) => {
 
     // gets beer types from server
     useEffect(() => {
-        if(!loaded){
+        if(!loaded && beers.length === 0){
             setLoaded(true);
             axios.get(process.env.REACT_APP_LOCALHOST + '/beers')
             .then(response => {
                 setBeers(response.data);
+                const fetchData = async () => {
+                    // This would be a GET call to an endpoint
+                    reset({
+                        firstName: props.firstName,
+                        lastName: props.lastName,
+                        date: props.date,
+                        beer: props.beer,
+                        id: props.id,
+                        phone: props.phone,
+                    });
+                };
+                fetchData();
             });
         }
-    },[loaded]);
+    },[loaded,reset]);
 
     return (
     <div className={styles.fullpage} dir="rtl">
