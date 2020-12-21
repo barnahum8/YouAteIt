@@ -1,8 +1,8 @@
 import pool from '../dbconfig/dbconnector';
-import FoodTypesController from './FoodTypesController';
-import usersFoodTypesController from './usersFoodTypesController';
+import FoodTypesController from './foodTypesController';
+import UsersFoodTypesController from './usersFoodTypesController';
 const foodTypeController = new FoodTypesController();
-const usersFoodTypeController = new usersFoodTypesController();
+const usersFoodTypeController = new UsersFoodTypesController();
 import { gql, request } from "graphql-request";
 
 class usersController {
