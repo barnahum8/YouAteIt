@@ -4,24 +4,27 @@ import { makeStyles } from '@material-ui/core';
 const useStyles = makeStyles((theme: Theme) => ({
     field: {
         marginTop: '3%',
-        float: 'right',
         paddingLeft: '2%',
     },
     
     dateandbeer: {
-        float: 'right',
+        display: "flex",
         marginTop: '5%',
         width: '100%',
     },
+
+    beer:{
+        marginTop: "2%",
+        display:"flex"
+    },
     
     selectform: {
-        float: 'right',
-        width: '25%',
-        marginRight: '2%',
+        width: '30%',
+        marginRight: '5%',
+        marginTop: "-2%",
     },
     
     label: {
-        float: 'right',
         marginTop: '3%',
         marginLeft: '1%',
         color: 'rgba(0, 0, 0, 0.54)',
@@ -29,6 +32,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     
     fullpage: {
         marginRight: '2%',
+    },
+
+    formflex: {
+        display:"flex"
     }
 }));
 
