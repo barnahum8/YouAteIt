@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     
     fullpage: {
-        float: 'right',
         marginRight: '2%',
     }
 }));
