@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullpage: {
-        float: 'right',
         marginRight: '2%',
         overflowY:'auto',
         overflowX:'hidden',
