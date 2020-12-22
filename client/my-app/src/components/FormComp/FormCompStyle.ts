@@ -7,7 +7,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     tabpanel: {
         width: '60%',
-        float: 'right',
         backgroundColor: 'gainsboro',
         height: '60vh',
     }
