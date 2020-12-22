@@ -12,4 +12,4 @@ COPY server/src/server.ts ./server/
 
 EXPOSE 3080
 
-CMD ["node", "./server/src/server.ts"]
+CMD ["node", "./server/server.ts"]
