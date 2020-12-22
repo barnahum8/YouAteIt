@@ -1,5 +1,6 @@
 import express, { Application, Router } from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import foodTypesRoute from './routes/foodTypesRoute';
 import beersRoute from './routes/beersRoute';
 import usersRoute from './routes/usersRoute';
@@ -14,11 +15,7 @@ class Server {
 
         this.app = express();
 
-        this.app.use((req, res, next) => {
-            res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-            next();
-        });
+        this.app.use(cors());
 
         this.config();
         this.routerConfig();
