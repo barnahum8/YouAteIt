@@ -19,7 +19,7 @@ class FoodTypesController {
             const foodTypes = await request(String(process.env.GRAPHQL), getFoodTypesQuery)
             res.send(foodTypes.allFoodtypes.nodes);
         } catch (error) {
-            res.status(400).send(error);
+            res.status(error.response.status).send(error.message);
         }
     }
 
@@ -43,7 +43,7 @@ class FoodTypesController {
         try {
             await request(String(process.env.GRAPHQL), createFoodTypesQuery,{foodTypeName:req.body.newType})
         } catch (error) {
-            res.status(400).send(error);
+            res.status(error.response.status).send(error.message);
         }
     }
 }

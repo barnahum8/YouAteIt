@@ -19,7 +19,7 @@ class BeersController {
             const beers = await request(String(process.env.GRAPHQL), getBeersQuery)
             res.send(beers.allBeers.nodes);
         } catch (error) {
-            res.status(400).send(error);
+            res.status(error.response.status).send(error.message);
         }
     }
 }

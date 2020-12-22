@@ -64,7 +64,7 @@ const PersonalDetails = (props) => {
     useEffect(() => {
         if(!loaded && beers.length === 0){
             setLoaded(true);
-            axios.get(process.env.REACT_APP_AZURE + '/beers')
+            axios.get(process.env.REACT_APP_LOCALHOST + '/beers')
             .then(response => {
                 setBeers(response.data);
                 const fetchData = async () => {

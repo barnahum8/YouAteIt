@@ -42,7 +42,7 @@ class UsersFoodTypesController {
           }); 
           
         } catch (error) {
-            res.status(400).send(error);
+          res.status(error.response.status).send(error.message);
         }
     }
 }
