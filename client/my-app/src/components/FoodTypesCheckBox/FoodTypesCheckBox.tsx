@@ -21,8 +21,8 @@ const FoodTypesCheckBox = (props) => {
     const [newTypeChecked, setNewTypeChecked] = useState<boolean>(false);
 
     return (
-    <div dir="ltr" className={styles.fullpage}>
-         <FormControl style={{direction:'rtl',float: 'right'}} required component="fieldset" >
+    <div dir="rtl" className={styles.fullpage}>
+         <FormControl style={{direction:'rtl'}} required component="fieldset" >
             <FormGroup>
             {props.foodTypes?.map((foodType) => {
                 return(<FormControlLabel key={foodType.id.toString()}
@@ -50,7 +50,7 @@ const FoodTypesCheckBox = (props) => {
                             />
             </div>
         </FormControl>
-        <Button onClick={handleSubmit(props.submitAll)} style={{marginTop:'38%',marginLeft:'21%',display:'flex',width: '10%'}} 
+        <Button onClick={handleSubmit(props.submitAll)} style={{marginTop:'22%',marginRight:'38%',position:'fixed',width: '10%'}} 
                             variant="contained" color="primary">סיום</Button>
     </div>
     )

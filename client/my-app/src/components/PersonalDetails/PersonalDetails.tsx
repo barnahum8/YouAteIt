@@ -86,71 +86,77 @@ const PersonalDetails = (props) => {
     return (
     <div className={styles.fullpage} dir="rtl">
         <form onSubmit={handleSubmit(props.changeToNextTab)} noValidate autoComplete="off">
-            <TextField  name="firstName" 
-                        error={errors.firstName !== undefined}
-                        helperText={errors.firstName? errors.firstName.message : ''} 
-                        inputProps={{ maxLength: 50 }}
-                        style={{paddingLeft: '2%',float:'right'}}
-                        InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
-                        id="firstName" 
-                        label="שם פרטי"
-                        inputRef={register} />
-            <TextField  name="lastName"
-                        error={errors.lastName !== undefined}
-                        helperText={errors.lastName? errors.lastName.message : ''}
-                        inputProps={{ maxLength: 50 }} 
-                        style={{paddingRight: '2%',float:'right'}}
-                        InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
-                        id="lastName" 
-                        label="שם משפחה"
-                        inputRef={register} />
+            <div className={styles.formflex}>
+                <TextField  name="firstName" 
+                            error={errors.firstName !== undefined}
+                            helperText={errors.firstName? errors.firstName.message : ''} 
+                            inputProps={{ maxLength: 50 }}
+                            style={{paddingLeft: '2%'}}
+                            InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
+                            id="firstName" 
+                            label="שם פרטי"
+                            inputRef={register} />
+                <TextField  name="lastName"
+                            error={errors.lastName !== undefined}
+                            helperText={errors.lastName? errors.lastName.message : ''}
+                            inputProps={{ maxLength: 50 }} 
+                            style={{paddingRight: '2%'}}
+                            InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
+                            id="lastName" 
+                            label="שם משפחה"
+                            inputRef={register} />
+            </div>
             <div className={styles.dateandbeer}>
                 <p className={styles.label}>תאריך לידה:</p>
                 <TextField  name="date"
                             error={errors.date !== undefined}
                             helperText={errors.date? errors.date.message : ''}
-                            style={{padding:'1%',float: 'right',marginTop:'1%',marginLeft:'3%'}} 
+                            style={{padding:'1%',marginTop:'1%',marginLeft:'3%'}} 
                             id="date" 
                             type="date" 
                             inputRef={register}/>
-                <div hidden={!props.isOldForBeer(dateValue)}>
-                    <p className={styles.label}>בירה אהובה:</p>
-                    <FormControl className={styles.selectform}>
-                        <Select
-                        name="beer"
-                        id="beer"
-                        style={{padding:'2%', marginTop:'10%'}} 
-                        native
-                        inputRef={register}>
-                        <option key="none" aria-label="None" value="" />
-                        {beers?.map((eachBeer) => {
-                            return(<option key={eachBeer.id} value={eachBeer.id}>{eachBeer.name}</option>)
-                        })}
-                        </Select>
-                    </FormControl>
+                <div style={{width:"60%"}} hidden={!props.isOldForBeer(dateValue)}>
+                    <div className={styles.beer}>
+                        <p className={styles.label}>בירה אהובה:</p>
+                        <FormControl className={styles.selectform}>
+                            <Select
+                            name="beer"
+                            id="beer"
+                            style={{padding:'2%', marginTop:'10%'}} 
+                            native
+                            inputRef={register}>
+                            <option key="none" aria-label="None" value="" />
+                            {beers?.map((eachBeer) => {
+                                return(<option key={eachBeer.id} value={eachBeer.id}>{eachBeer.name}</option>)
+                            })}
+                            </Select>
+                        </FormControl>
+                    </div>
                 </div>
             </div>
-            <div className={styles.field}>
-                <TextField  name="id" 
-                            error={errors.id !== undefined}
-                            helperText={errors.id? errors.id.message : ''} 
-                            inputProps={{ maxLength: 9 }}
-                            InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
-                            id="id" 
-                            label='ת"ז'
-                            inputRef={register} />
+            <div className={styles.formflex}>
+                <div className={styles.field}>
+                    <TextField  name="id" 
+                                error={errors.id !== undefined}
+                                helperText={errors.id? errors.id.message : ''} 
+                                inputProps={{ maxLength: 9 }}
+                                InputLabelProps={{style:{direction:"rtl",left:"auto"}}} 
+                                id="id" 
+                                label='ת"ז'
+                                inputRef={register} />
+                </div>
+                <div className={styles.field}>
+                    <TextField  name="phone" 
+                                error={errors.phone !== undefined}
+                                helperText={errors.phone? errors.phone.message : ''}  
+                                InputLabelProps={{style:{direction:"rtl",left:"auto"}}}
+                                inputProps={{ maxLength: 10 }} 
+                                id="phone" 
+                                label="טלפון"
+                                inputRef={register} />
+                </div>
             </div>
-            <div className={styles.field}>
-                <TextField  name="phone" 
-                            error={errors.phone !== undefined}
-                            helperText={errors.phone? errors.phone.message : ''}  
-                            InputLabelProps={{style:{direction:"rtl",left:"auto"}}}
-                            inputProps={{ maxLength: 10 }} 
-                            id="phone" 
-                            label="טלפון"
-                            inputRef={register} />
-            </div>
-            <Button variant="contained" color="primary" style={{marginTop:'20%',width: '20%'}} 
+            <Button variant="contained" color="primary" style={{marginTop:'7%',width: '10%',marginRight: "10%",position: "fixed"}} 
                       type='submit'>שמור והמשך</Button>
         </form>
     </div>

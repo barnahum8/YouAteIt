@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         overflowX:'hidden',
         width: '100%',
         height: '60vh',
+        display: "flex",
     },
     newtype: {
         width: '30vh',

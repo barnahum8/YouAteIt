@@ -40,11 +40,12 @@ const HomePage = (props) => {;
   return (
     <div>
         <AppBar position="static">
-          <div>
+          <div  style={{display: "flex"}}>
             <h2 className={styles.title}>אכלת אותה</h2>
             <img alt="logo" className={styles.logo} src="logo.png" width='80' height="60"></img>
-            <div className={styles.username} hidden={!isLogined}>
-              <div className={styles.logoutbtn}>
+            <div className={styles.username}>
+              <p className={styles.hello} hidden={!isLogined}>שלום {userEmail}</p>
+              <div className={styles.logoutbtn} hidden={!isLogined}>
                 <GoogleLogout
                 clientId={ CLIENT_ID }
                 buttonText='logout'
@@ -53,7 +54,6 @@ const HomePage = (props) => {;
               >
               </GoogleLogout>
               </div>
-              <p className={styles.hello}>שלום {userEmail}</p>
           </div>
           </div>
         </AppBar>

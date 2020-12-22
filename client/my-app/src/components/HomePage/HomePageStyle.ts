@@ -3,17 +3,18 @@ import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) => ({
     title: {
-        float: 'right',
         marginRight: '5%',
         marginTop: '2%',
     },  
     username: {
-        float: 'left',
         marginTop: '2%',
         width: '30%',
+        flex: 1,
+        display: "inline-flex",
+        justifyContent: "flex-end",
+        marginLeft:"5%"
     },  
     hello: {
-        float: 'right',
         marginLeft: '5%',
     },    
     comp: {
@@ -21,14 +22,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         direction: "ltr"
     },    
     logo: {
-        float: 'right',
         marginRight: '2%',
         marginTop: '1%',
     },
     logoutbtn: {
         direction: "ltr",
-        float: "left",
-        marginLeft: "30%",
     },
 }));
 
