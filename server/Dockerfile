@@ -3,16 +3,18 @@ FROM node:current-slim
 
 # Set the working directory.
 WORKDIR /usr/src/server
-
-COPY * ./
-
-# Run the command inside your image filesystem.
+# install app dependencies
+COPY package.json ./
+COPY package-lock.json ./
 RUN npm install
 
+# add app
+COPY . ./
+
 # Add metadata to the image to describe which port the container is listening on at runtime.
-EXPOSE 8080
+EXPOSE 4000
 
 # Run the specified command within the container.
-CMD [ "npm", "run", "deploy" ]
+CMD ["npm", "start"]
 
 ##
