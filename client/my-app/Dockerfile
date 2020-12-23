@@ -2,6 +2,9 @@
 FROM node:current-slim
 # Set the working directory.
 WORKDIR /usr/src/app
+
+COPY * ./
+
 RUN npm install
 # Add metadata to the image to describe which port the container is listening on at runtime.
 EXPOSE 8080

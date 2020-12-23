@@ -24,7 +24,7 @@ const FormComp = (props) => {
     useEffect(() => {
       if(!loaded){
         setLoaded(true);
-        axios.get(process.env.REACT_APP_AZURE + '/foodTypes')
+        axios.get(process.env.REACT_APP_LOCALHOST + '/foodTypes')
         .then(response => {
           setFoodTypes(response.data);
         });
@@ -199,7 +199,7 @@ const FormComp = (props) => {
         };
 
         // https://youateitserver.azurewebsites.net/users
-        axios.post(process.env.REACT_APP_AZURE + '/users', fullData)
+        axios.post(process.env.REACT_APP_LOCALHOST + '/users', fullData)
             .then(response => {
               if(response.status === 200){
                 Swal.fire({
